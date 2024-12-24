@@ -48,13 +48,13 @@ public class YahooFinanceAPI {
     }
 
     // Metodo di test per il titolo AAPL
-    public static void testApi() {
-        System.out.println("Test dell'API per AAPL");
-        double price = getCurrentPrice("AAPL");
-        if (price > 0) {
-            System.out.println("Prezzo AAPL: " + price);
-        } else {
-            System.err.println("Errore nel recupero del prezzo di AAPL");
-        }
-    }
+//    public static void testApi() {
+//        System.out.println("Test dell'API per AAPL");
+//        double price = getCurrentPrice("AAPL");
+//        if (price > 0) {
+//            System.out.println("Prezzo AAPL: " + price);
+//        } else {
+//            System.err.println("Errore nel recupero del prezzo di AAPL");
+//        }
+//    }
 }

@@ -2,8 +2,12 @@ package com.example;
 
 import java.util.*;
 import java.io.*;
+import java.time.LocalDateTime;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+// Importa la classe Transaction esterna
+import com.example.Transaction;
 
 public class PortfolioManager {
     private Map<String, Portfolio> userPortfolios;
@@ -30,11 +34,31 @@ public class PortfolioManager {
             }
             
             json.put("stocks", stocksArray);
+            /* Aggiunta delle transazioni al JSON */
+            JSONArray transactionsArray = new JSONArray();
+            for (Transaction tx : portfolio.getTransactions()) { // Utilizza com.example.Transaction
+                transactionsArray.put(tx.toJson());
+            }
+            json.put("transactions", transactionsArray);
             return json.toString();
         } catch (Exception e) {
             System.err.println("Error creating portfolio JSON: " + e.getMessage());
             return "{\"stocks\":[]}";
         }
+    }
+
+    // Metodo per aggiungere una transazione
+    public void addTransaction(String username, Transaction transaction) { // Utilizza com.example.Transaction
+        Portfolio portfolio = userPortfolios.getOrDefault(username, new Portfolio());
+        portfolio.getTransactions().add(transaction);
+        userPortfolios.put(username, portfolio);
+        savePortfolios();
+    }
+
+    // Metodo per ottenere lo storico delle transazioni
+    public List<Transaction> getTransactions(String username) { // Utilizza com.example.Transaction
+        Portfolio portfolio = userPortfolios.getOrDefault(username, new Portfolio());
+        return portfolio.getTransactions();
     }
 
     public void addStock(String username, Stock stock) {
@@ -44,6 +68,8 @@ public class PortfolioManager {
         stock.setCurrentPrice(currentPrice);
         userPortfolios.put(username, portfolio);
         savePortfolios();
+        /* Aggiunta della transazione */
+        addTransaction(username, new Transaction("Aggiunta", stock.getTicker(), stock.getQuantity(), stock.getPurchasePrice()));
     }
 
     public boolean removeStock(String username, String ticker) {
@@ -54,6 +80,8 @@ public class PortfolioManager {
             userPortfolios.put(username, portfolio);
             savePortfolios();
             System.out.println("Stock " + ticker + " rimossa con successo."); // Log aggiunto
+            /* Aggiunta della transazione */
+            addTransaction(username, new Transaction("Rimozione", ticker, 0, 0.0));
         } else {
             System.out.println("Stock " + ticker + " non trovata."); // Log aggiunto
         }
@@ -74,6 +102,8 @@ public class PortfolioManager {
                 }
                 userPortfolios.put(username, portfolio);
                 savePortfolios();
+                /* Aggiunta della transazione */
+                addTransaction(username, new Transaction("Modifica", ticker, newQuantity, newPurchasePrice));
                 return true;
             }
         }

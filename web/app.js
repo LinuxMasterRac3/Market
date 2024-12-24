@@ -119,6 +119,94 @@ document.addEventListener("DOMContentLoaded", function () {
   // Function to fetch and display the portfolio
   let pieChart; // Variabile globale per il grafico a torta
 
+  // Funzione per recuperare e mostrare lo storico delle transazioni
+  async function fetchTransactionHistory() {
+    try {
+      const response = await fetch("/transactionHistory", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "same-origin",
+      });
+
+      if (response.status === 401) {
+        console.warn(
+          "Utente non autenticato per recuperare lo storico delle transazioni."
+        );
+        document.getElementById("transactionHistory").innerHTML =
+          "<p>Accesso richiesto per visualizzare lo storico delle transazioni.</p>";
+        return;
+      }
+
+      const transactions = await response.json();
+      displayTransactionHistory(transactions);
+    } catch (error) {
+      console.error(
+        "Errore nel recupero dello storico delle transazioni:",
+        error
+      );
+      document.getElementById("transactionHistory").innerHTML =
+        "<p>Errore nel caricamento dello storico delle transazioni.</p>";
+    }
+  }
+
+  function displayTransactionHistory(transactions) {
+    const container = document.getElementById("transactionHistory");
+    container.innerHTML = "";
+
+    if (transactions.length === 0) {
+      container.innerHTML = "<p>Nessuna transazione registrata.</p>";
+      return;
+    }
+
+    // Mostra solo le ultime 4 transazioni
+    const recentTransactions = transactions.slice(-4).reverse();
+
+    const table = document.createElement("table");
+    table.className = "table table-striped";
+
+    const thead = document.createElement("thead");
+    const headerRow = document.createElement("tr");
+    ["Tipo", "Ticker", "Quantità", "Prezzo (€)", "Data"].forEach((text) => {
+      const th = document.createElement("th");
+      th.textContent = text;
+      headerRow.appendChild(th);
+    });
+    thead.appendChild(headerRow);
+    table.appendChild(thead);
+
+    const tbody = document.createElement("tbody");
+    recentTransactions.forEach((tx) => {
+      const row = document.createElement("tr");
+
+      const typeCell = document.createElement("td");
+      typeCell.textContent = tx.type;
+      row.appendChild(typeCell);
+
+      const tickerCell = document.createElement("td");
+      tickerCell.textContent = tx.ticker;
+      row.appendChild(tickerCell);
+
+      const quantityCell = document.createElement("td");
+      quantityCell.textContent = tx.quantity || "-";
+      row.appendChild(quantityCell);
+
+      const priceCell = document.createElement("td");
+      priceCell.textContent = tx.price ? tx.price.toFixed(2) : "-";
+      row.appendChild(priceCell);
+
+      const dateCell = document.createElement("td");
+      const date = new Date(tx.timestamp);
+      dateCell.textContent = date.toLocaleString();
+      row.appendChild(dateCell);
+
+      tbody.appendChild(row);
+    });
+    table.appendChild(tbody);
+    container.appendChild(table);
+  }
+
   async function fetchPortfolio() {
     try {
       const response = await fetch("/portfolio");
@@ -149,6 +237,7 @@ document.addEventListener("DOMContentLoaded", function () {
       displayPortfolio(data.stocks);
       updateSummary(data.stocks); // Update the summary after fetching the portfolio
       updatePieChart(data.stocks); // Aggiorna il grafico a torta
+      await fetchTransactionHistory(); // Recupera lo storico delle transazioni
     } catch (error) {
       console.error("Errore durante il fetch del portafoglio:", error);
       alert(
@@ -437,26 +526,30 @@ document.addEventListener("DOMContentLoaded", function () {
   /* Theme Switcher */
   const themeToggleButton = document.getElementById("themeToggleButton");
 
-  // Load theme preference from localStorage
-  if (localStorage.getItem("theme") === "dark") {
-    document.body.classList.add("dark-mode");
-    themeToggleButton.textContent = "Light Mode";
-    console.log("Dark mode enabled from localStorage.");
-  }
-
-  // Toggle theme on button click
-  themeToggleButton.addEventListener("click", function () {
-    document.body.classList.toggle("dark-mode");
-    if (document.body.classList.contains("dark-mode")) {
+  if (themeToggleButton) {
+    // Load theme preference from localStorage
+    if (localStorage.getItem("theme") === "dark") {
+      document.body.classList.add("dark-mode");
       themeToggleButton.textContent = "Light Mode";
-      localStorage.setItem("theme", "dark");
-      console.log("Dark mode enabled.");
-    } else {
-      themeToggleButton.textContent = "Dark Mode";
-      localStorage.setItem("theme", "light");
-      console.log("Light mode enabled.");
+      console.log("Dark mode enabled from localStorage.");
     }
-  });
+
+    // Toggle theme on button click
+    themeToggleButton.addEventListener("click", function () {
+      document.body.classList.toggle("dark-mode");
+      if (document.body.classList.contains("dark-mode")) {
+        themeToggleButton.textContent = "Light Mode";
+        localStorage.setItem("theme", "dark");
+        console.log("Dark mode enabled.");
+      } else {
+        themeToggleButton.textContent = "Dark Mode";
+        localStorage.setItem("theme", "light");
+        console.log("Light mode enabled.");
+      }
+    });
+  } else {
+    console.warn("themeToggleButton non trovato nell'HTML.");
+  }
 
   // Inizializza la lista del portafoglio all'avvio
   fetchPortfolio();

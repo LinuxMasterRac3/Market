@@ -7,6 +7,8 @@ import java.nio.file.*;
 import java.util.*;
 import org.json.JSONObject;
 import org.json.JSONArray;
+import com.example.Stock; // Assicurati di importare correttamente la classe Stock
+import com.example.Transaction; // Assicurati di importare correttamente la classe Transaction
 
 public class ClientHandler implements Runnable {
     private Socket clientSocket;
@@ -30,7 +32,7 @@ public class ClientHandler implements Runnable {
                 // Parsing della richiesta
                 String[] requestParts = requestLine.split(" ");
                 if (requestParts.length < 2) {
-                    sendResponse(out, 400, "Bad Request", "Bad Request");
+                    sendResponse(out, 400, "Bad Request", "{\"error\": \"Bad Request\"}");
                     continue;
                 }
                 String method = requestParts[0];
@@ -64,6 +66,8 @@ public class ClientHandler implements Runnable {
                 // Gestione delle richieste
                 if (method.equals("GET") && path.equals("/portfolio")) {
                     handleGetPortfolio(out);
+                } else if (method.equals("GET") && path.equals("/transactionHistory")) { // Nuova condizione
+                    handleTransactionHistory(out);
                 } else if (method.equals("POST") && path.equals("/login")) {
                     handleLogin(params, out);
                 } else if (method.equals("POST") && path.equals("/register")) {
@@ -86,7 +90,7 @@ public class ClientHandler implements Runnable {
                     serveStaticFile(path, out);
                 } else {
                     // Handle unsupported methods
-                    sendResponse(out, 405, "Method Not Allowed", "Method Not Allowed");
+                    sendResponse(out, 405, "Method Not Allowed", "{\"error\": \"Method Not Allowed\"}");
                     System.out.println("Metodo non supportato: " + method + " " + path);
                 }
             }
@@ -171,7 +175,13 @@ public class ClientHandler implements Runnable {
             return;
         }
 
-        Stock stock = new Stock(ticker, quantity, purchasePrice, isBond);
+        // Opzione 1: Ottenere currentPrice prima della creazione
+        double currentPrice = YahooFinanceAPI.getCurrentPrice(ticker); // Assicurati che questo metodo esista
+        Stock stock = new Stock(ticker, quantity, purchasePrice, currentPrice, isBond);
+
+        // Opzione 2: Se non puoi ottenere currentPrice al momento, usa un valore di default (es. 0.0)
+        // Stock stock = new Stock(ticker, quantity, purchasePrice, 0.0, isBond);
+
         portfolioManager.addStock(currentUser, stock);
         sendResponse(out, 200, "OK", "Stock aggiunta con successo");
         System.out.println("Stock aggiunta per utente: " + currentUser);
@@ -242,6 +252,29 @@ public class ClientHandler implements Runnable {
         portfolioManager.updatePrices(currentUser);
         sendResponse(out, 200, "OK", "Prezzi aggiornati con successo");
         System.out.println("Prezzi aggiornati per utente: " + currentUser);
+    }
+
+    private void handleTransactionHistory(BufferedWriter out) throws IOException {
+        if (currentUser == null) {
+            sendResponse(out, 401, "Unauthorized", "{\"error\": \"Please login first\"}");
+            System.out.println("Tentativo di accedere a transactionHistory senza autenticazione.");
+            return;
+        }
+
+        try {
+            List<Transaction> transactions = portfolioManager.getTransactions(currentUser);
+            JSONArray jsonArray = new JSONArray();
+            for (Transaction tx : transactions) {
+                jsonArray.put(tx.toJson());
+            }
+            String responseBody = jsonArray.toString();
+            sendResponse(out, 200, "OK", responseBody);
+            System.out.println("Invio dello storico delle transazioni per utente: " + currentUser);
+        } catch (Exception e) {
+            String errorJson = "{\"error\": \"Error retrieving transaction history: " + e.getMessage() + "\"}";
+            sendResponse(out, 500, "Internal Server Error", errorJson);
+            System.err.println("Errore in handleTransactionHistory: " + e.getMessage());
+        }
     }
 
     private Map<String, String> parseParameters(String body) throws IOException {

@@ -1,29 +1,167 @@
+/* 1. Nuova Palette di Colori */
 :root {
-  --primary-color: #4caf50; /* Verde */
-  --secondary-color: #ffffff; /* Bianco */
-  --accent-color: #f44336; /* Rosso */
-  --background-color: #f0f2f5; /* Grigio chiaro */
-  --text-color: #333333; /* Grigio scuro */
+  --primary-color: #3e8092; /* Verde chiaro */
+  --secondary-color: #e8eddf; /* Verde tenue */
+  --accent-color: #f5cb5c; /* Giallo */
+  --background-color: #ffffff; /* Light mode background */
+  --text-color: #000000; /* Light mode text */
+  --card-background: #ffffff; /* Light mode card background */
   --card-shadow: rgba(0, 0, 0, 0.1);
-  --border-radius: 15px;
+  --border-radius: 10px;
+  --transition-speed: 0.3s;
+}
+
+/* 2. Applicazione del Nuovo Font */
+body {
+  font-family: "DM Serif Text", serif;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  transition: background-color var(--transition-speed),
+    color var(--transition-speed);
+}
+
+h1,
+h2,
+h5 {
+  color: var(--text-color);
+  font-weight: 700;
+}
+
+/* 3. Navbar Modernizzata */
+.navbar {
+  background-color: var(--primary-color);
+  box-shadow: 0 4px 6px var(--card-shadow);
+}
+
+.navbar-brand {
+  font-family: "Roboto Slab", serif;
+  font-size: 1.5rem;
+  color: var(--secondary-color) !important;
+}
+
+.navbar .nav-link {
+  color: var(--secondary-color) !important;
+  transition: color var(--transition-speed);
+}
+
+.navbar .nav-link:hover {
+  color: var(--accent-color) !important;
+}
+
+/* 4. Pulsanti Stilizzati */
+.btn {
+  border-radius: 25px;
+  padding: 10px 20px;
+  transition: background-color var(--transition-speed),
+    transform var(--transition-speed);
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  opacity: 0.9;
+}
+
+/* 5. Form Migliorati */
+.form-control {
+  border-radius: 20px;
+  padding: 12px 20px;
+  border: 1px solid #bdc3c7;
+  transition: border-color var(--transition-speed),
+    box-shadow var(--transition-speed);
+}
+
+.form-control:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 8px rgba(26, 188, 156, 0.5);
+}
+
+/* 6. Card Accattivanti */
+.card {
+  border: none;
+  border-radius: var(--border-radius);
+  box-shadow: 0 4px 8px var(--card-shadow);
+  transition: transform var(--transition-speed),
+    box-shadow var(--transition-speed);
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px var(--card-shadow);
+}
+
+/* 7. Animazioni */
+.fade-in {
+  animation: fadeIn 1s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* 8. Responsività Migliorata */
+@media (max-width: 768px) {
+  .navbar-brand {
+    font-size: 1.2rem;
+  }
+
+  .container {
+    padding: 20px;
+  }
+
+  #portfolioPieChart {
+    width: 100%;
+    height: auto;
+  }
+}
+
+/* 9. Icone Personalizzate */
+.icon {
+  margin-right: 8px;
+  color: var(--accent-color);
+}
+
+/* 10. Miglioramenti Generali */
+body.dark-mode {
+  background-color: #1e1e1e; /* Tonalità più scura */
+  color: #ffffff;
+}
+
+body.dark-mode .navbar {
+  background-color: var(--primary-color);
+}
+
+body.dark-mode .card {
+  background-color: #242423;
+  color: #ffffff;
+}
+
+body.dark-mode .form-control {
+  background-color: #242423;
+  color: #ffffff;
+  border-color: #3d566e;
+}
+
+body.dark-mode .form-control:focus {
+  border-color: #1abc9c;
+  box-shadow: 0 0 8px rgba(26, 188, 156, 0.5);
 }
 
 /* Tipografia migliorata */
 body {
-  font-family: "Roboto", sans-serif;
-  background-color: rgba(
-    245,
-    245,
-    245,
-    0.9
-  ); /* Bianco tendente al grigio trasparente */
+  font-family: "DM Serif Text", serif;
+  background-color: var(--background-color);
   color: var(--text-color);
 }
 
 h1,
 h2,
 h5 {
-  color: #343a40; /* Colore del testo scuro */
+  color: var(--text-color);
   font-weight: 700;
 }
 
@@ -55,7 +193,6 @@ button:hover {
 #portfolioSummary {
   background-color: #fff;
   padding: 10px;
-  border: 1px solid #ccc;
   border-radius: 4px;
   margin-bottom: 20px;
   width: 100%;
@@ -207,7 +344,7 @@ button:hover {
   border: none;
   border-radius: 15px;
   overflow: hidden;
-  background-color: #ffffff;
+  background-color: var(--card-background);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
@@ -226,6 +363,12 @@ button:hover {
 .btn-warning:hover {
   opacity: 0.9;
   transform: translateY(-2px);
+}
+
+.btn-warning:hover {
+  background-color: var(
+    --accent-color
+  ); /* Mantiene il giallo invece di diventare verde */
 }
 
 .card:hover {
@@ -281,7 +424,7 @@ button:hover {
 /* Stili per le icone */
 .icon {
   margin-right: 8px;
-  color: #007bff;
+  color: var(--accent-color);
 }
 
 /* Layout per la sezione Riepilogo Portafoglio e Distribuzione del Portafoglio */
@@ -354,24 +497,24 @@ button#updatePricesButton {
 
 /* Stili per i pulsanti */
 .btn-primary {
-  background-color: #007bff;
+  background-color: var(--primary-color);
   border: none;
 }
 
 .btn-success {
-  background-color: #28a745;
+  background-color: var(--accent-color);
   border: none;
 }
 
 .btn-warning {
-  background-color: #ffc107;
+  background-color: var(--accent-color);
   border: none;
 }
 
 .btn-danger {
-  background-color: #dc3545;
+  background-color: #dc3545; /* Rosso */
   border: none;
-  transition: background-color 0.3s;
+  transition: background-color var(--transition-speed);
 }
 
 .btn-danger:hover {
@@ -429,4 +572,340 @@ p,
 .stock-item button {
   margin-left: 10px; /* Space between buttons */
 }
+
+/* 1. Modifica del colore del testo dei pulsanti nella light mode */
+.btn,
+button {
+  /* ...existing code... */
+  color: #000; /* Cambia il testo dei pulsanti da bianco a nero */
+}
+
+/* ...existing code... */
+
+/* 2. Aggiornamenti per il Dark Mode */
+body.dark-mode {
+  /* ...existing code... */
+  background-color: #1e1e1e; /* Tonalità più scura */
+  color: #ffffff;
+}
+
+body.dark-mode .container {
+  background-color: #242423; /* Rende il container scuro */
+}
+
+body.dark-mode .card {
+  background-color: #242423;
+  color: #ffffff;
+}
+
+body.dark-mode .form-control {
+  background-color: #242423;
+  color: #ffffff;
+  border-color: #3d566e;
+}
+
+body.dark-mode .form-control:focus {
+  border-color: #1abc9c;
+  box-shadow: 0 0 8px rgba(26, 188, 156, 0.5);
+}
+
+/* Assicurati che i testi all'interno del container siano bianchi */
+body.dark-mode .card-title,
+body.dark-mode .card-text,
+body.dark-mode p,
+body.dark-mode .stock-info {
+  color: #ffffff;
+}
+
+/* 3. Mantieni il container in light mode con sfondo bianco e testi neri */
+body:not(.dark-mode) .container {
+  background-color: #ffffff;
+  color: #000000;
+}
+
+/* 4. Assicurare che i pulsanti in dark mode mantengano il testo bianco */
+body.dark-mode .btn,
+body.dark-mode button {
+  color: #000000; /* Testo dei pulsanti nero in dark mode */
+}
+
+/* 5. Correzioni per Dark Mode sui Pulsanti */
+body.dark-mode .btn,
+body.dark-mode button {
+  color: #000000; /* Testo dei pulsanti nero in dark mode */
+}
+
+/* 6. Mantenere il colore originale dei pulsanti .btn-success in dark mode */
+body.dark-mode .btn-success {
+  background-color: var(--accent-color); /* Mantiene il giallo */
+  color: #000000; /* Testo nero */
+}
+
+body.dark-mode .btn-success:hover {
+  background-color: var(--accent-color); /* Evita cambiamento al hover */
+  color: #000000; /* Testo rimane nero */
+}
+
+/* 7. Rendere le card-body più scure e mantenere i font bianchi */
+body.dark-mode .card-body {
+  background-color: #2b2b2b; /* Tonalità più scura */
+  color: #ffffff; /* Testo bianco */
+}
+
+/* ...existing code... */
+
+body.dark-mode .card-body {
+  background-color: #2b2b2b; /* Tonalità più scura */
+  /* ...existing code... */
+}
+
+body.dark-mode .navbar-brand,
+body.dark-mode .navbar-nav .nav-link {
+  color: var(--secondary-color) !important;
+  /* ...existing code... */
+}
+
+/* ...existing code... */
+
+/* Override delle regole hover per .btn-success in modalità light */
+.btn-success {
+  background-color: #fbe2a2; /* Mantiene il giallo */
+  border: none;
+  color: #000; /* Testo nero */
+  transition: opacity var(--transition-speed), transform var(--transition-speed);
+}
+
+.btn-success:hover {
+  background-color: #d4b14f; /* Mantiene il giallo */
+  opacity: 0.9; /* Aumenta leggermente l'opacità */
+  transform: translateY(-2px); /* Leggera trasformazione */
+  color: #000; /* Testo rimane nero */
+}
+
+/* Override delle regole hover per .btn-success in dark mode */
+body.dark-mode .btn-success {
+  background-color: #fbe2a2; /* Mantiene il giallo */
+  color: #000000; /* Testo nero */
+  transition: opacity var(--transition-speed), transform var(--transition-speed);
+}
+
+body.dark-mode .btn-success:hover {
+  background-color: #d4b14f; /* Mantiene il giallo */
+  opacity: 0.9; /* Aumenta leggermente l'opacità */
+  transform: translateY(-2px); /* Leggera trasformazione */
+  color: #000000; /* Testo rimane nero */
+}
+
+/* ...existing code... */
+
+/* 8. Correzioni Generali per Dark Mode */
+body.dark-mode {
+  background-color: #1e1e1e; /* Tonalità più scura */
+  color: #ffffff; /* Testo bianco */
+}
+
+/* Assicurati che tutti gli elementi testuali abbiano colore bianco in dark mode */
+body.dark-mode p,
+body.dark-mode span,
+body.dark-mode h1,
+body.dark-mode h2,
+body.dark-mode h3,
+body.dark-mode h4,
+body.dark-mode h5,
+body.dark-mode h6,
+body.dark-mode label,
+body.dark-mode .form-control::placeholder {
+  color: #ffffff; /* Testo bianco */
+}
+
+/* Override per elementi specifici che potrebbero avere colori errati */
+body.dark-mode .card-text {
+  color: #ffffff; /* Testo bianco */
+}
+
+body.dark-mode .navbar-brand,
+body.dark-mode .navbar-nav .nav-link {
+  color: var(--secondary-color) !important;
+}
+
+body.dark-mode .list-group-item {
+  background-color: #343a40; /* Sfondo scuro per le liste */
+  color: #ffffff; /* Testo bianco */
+}
+
+body.dark-mode .btn {
+  color: #000000; /* Testo dei pulsanti nero in dark mode */
+}
+
+/* Correggi eventuali proprietà errate */
+body.dark-mode .some-element {
+  /* ...existing code... */
+  /* Rimuovi o correggi proprietà errate */
+  /* Es: color: none; */
+  /* ...existing code... */
+}
+
+/* Aggiungi regole per elementi aggiuntivi se necessario */
+body.dark-mode .tooltip-inner {
+  background: rgba(
+    255,
+    255,
+    255,
+    0.9
+  ); /* Sfondo chiaro per tooltip in dark mode */
+  color: #000000; /* Testo nero nei tooltip */
+}
+
+/* ...existing code... */
+
+/* Aggiornamento dello sfondo e del testo per #portfolioSummary in dark mode */
+body.dark-mode #portfolioSummary {
+  background-color: #2b2b2b; /* Sfondo scuro */
+  color: #ffffff; /* Testo bianco */
+}
+
+/* Aggiornamento dello sfondo per #portfolioPieChart in dark mode */
+body.dark-mode #portfolioPieChart {
+  background-color: #2b2b2b; /* Sfondo scuro */
+}
+
+/* ...existing code... */
+
+/* Stile per themeToggleButton per assomigliare a .btn-primary e .btn-block */
+#themeToggleButton {
+  background-color: var(--primary-color); /* Stile di .btn-primary */
+  border: none;
+  color: #ffffff; /* Testo bianco come .btn-primary */
+  display: block; /* Stile di .btn-block */
+  width: 100%; /* Stile di .btn-block */
+  border-radius: 25px; /* Come .btn-primary */
+  padding: 10px 20px; /* Come .btn-primary */
+  transition: background-color var(--transition-speed),
+    transform var(--transition-speed);
+}
+
+/* Stile per logoutButton per assomigliare a .btn-success e .btn-block */
+#logoutButton {
+  background-color: var(--accent-color); /* Stile di .btn-success */
+  border: none;
+  color: #000000; /* Testo nero come .btn-success */
+  display: block; /* Stile di .btn-block */
+  width: 100%; /* Stile di .btn-block */
+  border-radius: 25px; /* Come .btn-success */
+  padding: 10px 20px; /* Come .btn-success */
+  transition: background-color var(--transition-speed),
+    transform var(--transition-speed);
+}
+
+/* ...existing code... */
+
+/* Stili per la tabella dello storico delle transazioni */
+#transactionHistory table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+#transactionHistory th,
+#transactionHistory td {
+  padding: 8px 12px;
+  border: 1px solid #dee2e6;
+  text-align: left;
+}
+
+#transactionHistory th {
+  background-color: var(--secondary-color);
+  color: var(--text-color);
+}
+
+#transactionHistory tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+/* ...existing code... */
+
+/* Stili per la sezione Storico delle Transazioni */
+.transaction-history {
+  max-height: 300px; /* Altezza fissa per abilitare lo scroll */
+  overflow-y: auto;
+  position: relative;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  padding: 10px;
+  background-color: #ffffff;
+}
+
+.transaction-history table {
+  width: 100%;
+  table-layout: fixed; /* Layout fisso per le colonne */
+  border-collapse: collapse;
+}
+
+.transaction-history thead {
+  position: sticky;
+  top: 0;
+  background-color: var(
+    --background-color
+  ); /* Assicura un background per la header */
+  z-index: 1;
+}
+
+.transaction-history th,
+.transaction-history td {
+  padding: 8px;
+  text-align: left;
+}
+
+.transaction-history th:nth-child(1),
+.transaction-history td:nth-child(1) {
+  width: 15%; /* Tipo */
+}
+
+.transaction-history th:nth-child(2),
+.transaction-history td:nth-child(2) {
+  width: 20%; /* Ticker */
+}
+
+.transaction-history th:nth-child(3),
+.transaction-history td:nth-child(3) {
+  width: 15%; /* Quantità */
+}
+
+.transaction-history th:nth-child(4),
+.transaction-history td:nth-child(4) {
+  width: 15%; /* Prezzo (€) */
+}
+
+.transaction-history th:nth-child(5),
+.transaction-history td:nth-child(5) {
+  width: 35%; /* Data */
+}
+
+/* Assicurarsi che la tabella occupi lo spazio correttamente */
+.transaction-history table {
+  width: 100%;
+  table-layout: fixed;
+}
+
+/* Prevent table layout issues */
+.transaction-history th,
+.transaction-history td {
+  padding: 8px;
+  text-align: left;
+}
+
+/* Optional: Stili per migliorare la visualizzazione durante lo scroll */
+.transaction-history tr {
+  white-space: nowrap;
+}
+
+/* Optional: Nascondere la scrollbar */
+.transaction-history::-webkit-scrollbar {
+  width: 8px;
+}
+
+.transaction-history::-webkit-scrollbar-thumb {
+  background-color: var(--accent-color);
+  border-radius: 4px;
+}
+
 /* ...existing code... */

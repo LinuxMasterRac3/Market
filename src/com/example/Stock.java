@@ -9,12 +9,17 @@ public class Stock {
     private double currentPrice;
     private boolean isBond;
 
-    public Stock(String ticker, int quantity, double purchasePrice, boolean isBond) {
+    public Stock(String ticker, int quantity, double purchasePrice, double currentPrice, boolean isBond) {
         this.ticker = ticker;
         this.quantity = quantity;
         this.purchasePrice = purchasePrice;
+        this.currentPrice = currentPrice;
         this.isBond = isBond;
-        this.currentPrice = 0.0; // Inizializza a 0.0; verrà aggiornato dopo
+    }
+
+    // Aggiungi un costruttore sovraccarico
+    public Stock(String ticker, int quantity, double purchasePrice, boolean isBond) {
+        this(ticker, quantity, purchasePrice, 0.0, isBond); // Imposta currentPrice a 0.0 di default
     }
 
     public JSONObject toJsonObject() {
@@ -34,8 +39,7 @@ public class Stock {
         double currentPrice = json.getDouble("currentPrice");
         boolean isBond = json.getBoolean("isBond");
 
-        Stock stock = new Stock(ticker, quantity, purchasePrice, isBond);
-        stock.setCurrentPrice(currentPrice);
+        Stock stock = new Stock(ticker, quantity, purchasePrice, currentPrice, isBond);
         return stock;
     }
 
