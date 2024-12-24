@@ -1,6 +1,5 @@
 #!/bin/bash
 cd /app
-# Remove class files
 find src/com/example/ -name "*.class" -delete
 
 # Compile Java files
