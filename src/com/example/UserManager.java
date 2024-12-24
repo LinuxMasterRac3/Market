@@ -30,7 +30,27 @@ public class UserManager {
         User user = getUserByUsername(username);
         if (user == null) return false;
         String passwordHash = hashPassword(password);
-        return user.getPasswordHash().equals(passwordHash);
+        if (user.getPasswordHash().equals(passwordHash)) {
+            user.setLoggedIn(true);
+            saveUsers();
+            return true;
+        }
+        return false;
+    }
+
+    public boolean logout(String username) {
+        User user = getUserByUsername(username);
+        if (user != null && user.isLoggedIn()) {
+            user.logout();
+            saveUsers();
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isUserLoggedIn(String username) {
+        User user = getUserByUsername(username);
+        return user != null && user.isLoggedIn();
     }
 
     private User getUserByUsername(String username) {

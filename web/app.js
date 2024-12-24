@@ -396,7 +396,43 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("portfolioContent").style.display = "none";
     document.getElementById("accountSection").style.display = "none";
     console.log("Logout effettuato");
-  } // Aggiunge l'evento di logout  document    .getElementById("logoutButton")    .addEventListener("click", logoutUser);
+  }
+
+  // Fix the logout functionality
+  document
+    .getElementById("logoutButton")
+    .addEventListener("click", async function () {
+      try {
+        const response = await fetch("logout", {
+          method: "GET", // Cambiato da POST a GET
+          credentials: "same-origin",
+        });
+
+        console.log("Logout response status:", response.status); // Debug log
+
+        // Gestisci il logout indipendentemente dalla risposta
+        showAuthForms(true);
+        document.getElementById("portfolioContent").style.display = "none";
+        document.getElementById("accountSection").style.display = "none";
+        document.getElementById("loginUsername").value = "";
+        document.getElementById("loginPassword").value = "";
+
+        const text = await response.text();
+        console.log("Logout response:", text); // Debug log
+
+        if (response.ok) {
+          console.log("Logout effettuato con successo");
+        } else {
+          console.warn("Logout completato con warning:", text);
+        }
+      } catch (error) {
+        console.error("Errore durante il logout:", error);
+        // Esegui comunque il logout lato client
+        showAuthForms(true);
+        document.getElementById("portfolioContent").style.display = "none";
+        document.getElementById("accountSection").style.display = "none";
+      }
+    });
 
   /* Theme Switcher */
   const themeToggleButton = document.getElementById("themeToggleButton");
