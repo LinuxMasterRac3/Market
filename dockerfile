@@ -12,8 +12,7 @@ COPY comandi/compile.sh comandi/compile.sh
 COPY web/ web/
 
 # Update compile.sh to use correct paths and execute it
-RUN sed -i 's|../src|src|g' comandi/compile.sh && \
-    chmod +x comandi/compile.sh && \
+RUN chmod +x comandi/compile.sh && \
     sh comandi/compile.sh
 
 # Set run.sh executable
