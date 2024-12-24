@@ -1,3 +1,4 @@
 #!/bin/bash
 cd /app
-java -cp "lib/json-20240303.jar:classes" com.example.Server
+# Add current directory to classpath and use absolute paths
+java -cp "/app/lib/json-20240303.jar:/app/classes" com.example.Server
