@@ -1,0 +1,8 @@
+
+# Ignora file di sistema
+.DS_Store
+Thumbs.db
+
+# Ignora cartelle non necessarie
+Downloads/
+Pictures/
