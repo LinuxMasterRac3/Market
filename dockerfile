@@ -7,27 +7,19 @@ RUN apk add --no-cache bash dos2unix
 # Set the working directory to /app
 WORKDIR /app
 
-# Create all necessary directories including output
-RUN mkdir -p comandi src/com/example lib web classes/com/example
+# Create directory structure
+RUN mkdir -p src/com/example lib web classes comandi
 
-# Copy the lib directory to the container
-COPY lib/ lib/
-
-# Copy the src/com/example directory to the container
-COPY src/com/example/ src/com/example/
-
-# Copy the web directory to the container
+# Copy files maintaining structure
+COPY lib/* lib/
+COPY src/com/example/* src/com/example/
 COPY web/ web/
-
-# Copy all .sh files from comandi to the container's comandi directory
 COPY comandi/*.sh comandi/
 
-# Fix line endings of .sh files and set execute permissions
+# Fix scripts and compile
 RUN dos2unix comandi/*.sh && \
-    chmod +x comandi/*.sh
-
-# Compile the application using the compile.sh script
-RUN /bin/bash comandi/compile.sh
+    chmod +x comandi/*.sh && \
+    /bin/bash comandi/compile.sh
 
 # Expose port 8080 for the application
 EXPOSE 8080
