@@ -1,26 +1,26 @@
-# Usa un'immagine di base leggera con OpenJDK
+# Use OpenJDK lightweight base image
 FROM openjdk:17-jdk-alpine
 
-# Imposta la directory di lavoro all'interno del container
+# Set working directory
 WORKDIR /app
 
-# Copia le librerie e i file di sorgente
+# Copy libraries and source files
 COPY lib/ lib/
 COPY src/ src/
 COPY comandi/run.sh comandi/run.sh
 COPY comandi/compile.sh comandi/compile.sh
-
-# Copia la directory web/ nel container
 COPY web/ web/
 
-# Imposta i permessi di esecuzione per compile.sh e eseguilo
-RUN chmod +x comandi/compile.sh && sh comandi/compile.sh
+# Update compile.sh to use correct paths and execute it
+RUN sed -i 's|../src|src|g' comandi/compile.sh && \
+    chmod +x comandi/compile.sh && \
+    sh comandi/compile.sh
 
-# Assicurati che run.sh abbia i permessi di esecuzione
+# Set run.sh executable
 RUN chmod +x comandi/run.sh
 
-# Esponi la porta specificata dall'ambiente o la porta predefinita
+# Expose default port
 EXPOSE 8080
 
-# Imposta il comando di avvio del container
+# Set container startup command
 CMD ["sh", "comandi/run.sh"]
