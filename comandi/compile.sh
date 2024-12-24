@@ -3,4 +3,4 @@
 find ../src/com/example/ -name "*.class" -delete
 
 # Compila tutti i file Java includendo json-20240303.jar nel classpath
-javac -cp ../lib/json-20240303.jar ../src/com/example/*.java
+javac -cp ../lib/json-20240303.jar:../src $(find ../src/com/example -name "*.java")
