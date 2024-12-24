@@ -7,8 +7,8 @@ RUN apk add --no-cache bash dos2unix
 # Set the working directory to /app
 WORKDIR /app
 
-# Create necessary directories: comandi, src/com/example, lib, and web
-RUN mkdir -p comandi src/com/example lib web
+# Create all necessary directories including output
+RUN mkdir -p comandi src/com/example lib web classes/com/example
 
 # Copy the lib directory to the container
 COPY lib/ lib/
