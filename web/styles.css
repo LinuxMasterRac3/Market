@@ -1,0 +1,432 @@
+:root {
+  --primary-color: #4caf50; /* Verde */
+  --secondary-color: #ffffff; /* Bianco */
+  --accent-color: #f44336; /* Rosso */
+  --background-color: #f0f2f5; /* Grigio chiaro */
+  --text-color: #333333; /* Grigio scuro */
+  --card-shadow: rgba(0, 0, 0, 0.1);
+  --border-radius: 15px;
+}
+
+/* Tipografia migliorata */
+body {
+  font-family: "Roboto", sans-serif;
+  background-color: rgba(
+    245,
+    245,
+    245,
+    0.9
+  ); /* Bianco tendente al grigio trasparente */
+  color: var(--text-color);
+}
+
+h1,
+h2,
+h5 {
+  color: #343a40; /* Colore del testo scuro */
+  font-weight: 700;
+}
+
+form {
+  margin-bottom: 20px;
+}
+
+input[type="text"],
+input[type="number"] {
+  padding: 8px;
+  margin-right: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+button {
+  padding: 8px 12px;
+  background-color: #008cba;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #005f6a;
+}
+
+#portfolioSummary {
+  background-color: #fff;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  width: 100%;
+  height: auto; /* Remove fixed height */
+}
+
+#portfolioList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.card-container .card {
+  background: rgba(0, 0, 0, 0.05); /* Trasparenza leggera */
+  padding: 15px;
+  border: none;
+  border-radius: 10px;
+  width: 150px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card-container .card h3 {
+  margin-top: 0;
+}
+
+.card-container .card button {
+  margin-top: 10px;
+  background-color: #e74c3c;
+}
+
+.card-container .card button.modify-btn {
+  background-color: #f1c40f;
+}
+
+.card-container .card button:hover {
+  opacity: 0.8;
+}
+
+.card-deck .card {
+  min-width: 150px;
+  margin-bottom: 20px;
+}
+
+.card-body {
+  background: rgba(0, 0, 0, 0.03); /* Sfondo leggermente più scuro */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  background-color: rgba(255, 255, 255, 0.9);
+}
+
+#portfolioList .card {
+  background-color: #343a40; /* Sfondo scuro per le card delle azioni */
+  color: #ffffff; /* Testo bianco */
+  margin-bottom: 15px;
+  border-radius: 8px;
+  transition: transform 0.2s;
+}
+
+#portfolioList .card:hover {
+  transform: translateY(-5px);
+}
+
+#ticker,
+#removeTicker {
+  border: 2px solid #ced4da;
+}
+
+#ticker:focus,
+#removeTicker:focus {
+  border-color: #80bdff;
+  box-shadow: 0 0 5px rgba(128, 189, 255, 0.5);
+}
+
+/* Tooltip per i ticker */
+.tooltip-inner {
+  max-width: 200px;
+}
+
+.form-control::placeholder {
+  color: #6c757d;
+  opacity: 1; /* Firefox */
+}
+
+.form-control:-ms-input-placeholder {
+  /* Internet Explorer 10-11 */
+  color: #6c757d;
+}
+
+.form-control::-ms-input-placeholder {
+  /* Microsoft Edge */
+  color: #6c757d;
+}
+
+/* Layout del grafico a torta */
+.card-body h2 {
+  margin-bottom: 20px;
+  text-align: center;
+  margin-top: 40px;
+}
+
+#portfolioPieChart {
+  width: 300px; /* Ridotto da 600px */
+  height: 300px; /* Ridotto per mantenere proporzioni */
+  margin: 0 auto;
+  padding: 10px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  #portfolioPieChart {
+    max-width: 100%;
+    padding: 10px;
+  }
+
+  .card-deck {
+    flex-direction: column;
+  }
+
+  .card {
+    margin-bottom: 20px;
+  }
+}
+
+/* Responsività avanzata per schermi molto grandi */
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1400px;
+  }
+  .card-deck {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+  }
+}
+
+/* Miglioramenti Generali */
+.container {
+  padding: 30px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+}
+
+.card {
+  border: none;
+  border-radius: 15px;
+  overflow: hidden;
+  background-color: #ffffff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.btn-primary,
+.btn-danger,
+.btn-success,
+.btn-warning {
+  border-radius: 25px;
+  padding: 10px 20px;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.btn-primary:hover,
+.btn-danger:hover,
+.btn-success:hover,
+.btn-warning:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
+}
+
+.card:hover {
+  box-shadow: 0 8px 16px var(--card-shadow);
+  transform: translateY(-4px);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-control {
+  border-radius: 25px;
+  padding: 10px 15px;
+}
+
+.card-title {
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+  color: var(--text-color);
+}
+
+.card-text {
+  font-size: 1rem;
+  color: #555555;
+}
+
+/* Tooltip Personalizzati */
+.chartjs-tooltip {
+  opacity: 1;
+  position: absolute;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 8px;
+  border-radius: 4px;
+  transition: all 0.1s ease;
+  pointer-events: none;
+  transform: translate(-50%, -100%);
+}
+
+/* Stili per la navbar */
+.navbar {
+  margin-bottom: 30px;
+  background-color: var(--primary-color);
+}
+
+.navbar-brand,
+.navbar-nav .nav-link {
+  color: var(--secondary-color) !important;
+}
+
+.navbar-nav .nav-link:hover {
+  color: var(--accent-color) !important;
+}
+
+/* Stili per le icone */
+.icon {
+  margin-right: 8px;
+  color: #007bff;
+}
+
+/* Layout per la sezione Riepilogo Portafoglio e Distribuzione del Portafoglio */
+#portfolioSummary,
+.card-body h5 {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.canvas-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+@media (min-width: 768px) {
+  #portfolioSummary,
+  .canvas-container {
+    /* Remove height setting here */
+    height: auto;
+  }
+}
+
+/* Miglioramento dei pulsanti */
+button#updatePricesButton {
+  width: 100%;
+}
+
+/* Aggiunta di margini e padding per una migliore disposizione */
+
+/* Stili per la sezione Portafoglio */
+#portfolioListContainer {
+  background-color: rgba(255, 255, 255, 0.95); /* Sfondo bianco trasparente */
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+#portfolioListContainer .card-body {
+  padding: 20px;
+}
+
+/* Stilizzazione della lista */
+#portfolioList .list-group-item {
+  background-color: #ffffff;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#portfolioList .stock-info {
+  flex: 1;
+  margin-right: 20px;
+  color: #343a40; /* Testo scuro */
+}
+
+#portfolioList .stock-actions button {
+  margin-right: 5px;
+}
+
+/* Miglioramento dei colori delle card */
+.card {
+  border: none;
+  border-radius: 8px;
+}
+
+/* Stili per i pulsanti */
+.btn-primary {
+  background-color: #007bff;
+  border: none;
+}
+
+.btn-success {
+  background-color: #28a745;
+  border: none;
+}
+
+.btn-warning {
+  background-color: #ffc107;
+  border: none;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+  border: none;
+  transition: background-color 0.3s;
+}
+
+.btn-danger:hover {
+  background-color: #c82333;
+}
+
+.btn-block {
+  width: 100%;
+}
+
+/* Stili per i testi */
+p,
+.stock-info strong {
+  color: #495057;
+}
+
+/* Responsive adjustments */
+@media (max-width: 767.98px) {
+  /* Adjustments for smaller screens */
+  #portfolioListContainer .card-body {
+    padding: 15px;
+  }
+
+  #portfolioList .list-group-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  #portfolioList .stock-actions {
+    margin-top: 10px;
+  }
+}
+
+/* Stili per i pulsanti di azione nella lista del portafoglio */
+.stock-actions .btn {
+  min-width: 80px;
+}
+
+/* ...existing code... */
+.stock-item {
+  margin-bottom: 10px;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  padding: 10px;
+  gap: 5px; /* Spacing between elements */
+  display: flex;
+  align-items: center;
+  width: 100%; /* Ensure full width */
+}
+
+.stock-item button:first-of-type {
+  margin-left: auto; /* Push the first button to the right */
+}
+
+.stock-item button {
+  margin-left: 10px; /* Space between buttons */
+}
+/* ...existing code... */

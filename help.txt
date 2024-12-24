@@ -1,0 +1,74 @@
+Certo! Ecco una descrizione di ciò che fa ogni file nel tuo progetto:
+
+---
+
+### **YahooFinanceAPI.java**
+
+- **Descrizione**: Questa classe gestisce la comunicazione con l'API di Alpha Vantage per recuperare i prezzi correnti delle azioni. Sostituisce l'utilizzo precedente dell'API di Yahoo Finance, fornendo un metodo `getCurrentPrice` che invia una richiesta HTTP all'API e analizza la risposta JSON per estrarre il prezzo attuale dell'azione richiesta. Include anche un metodo di test `testApi` per verificare la funzionalità con un ticker di esempio.
+
+---
+
+### **PortfolioManager.java**
+
+- **Descrizione**: Questa classe gestisce le operazioni sul portafoglio dell'utente. Offre funzionalità per aggiungere e rimuovere azioni, aggiornare i prezzi correnti, calcolare le tasse e salvare o caricare il portafoglio da un file JSON (`portafoglio.json`). Quando viene aggiunta una nuova azione, aggiorna immediatamente il suo prezzo corrente utilizzando la classe `YahooFinanceAPI`. Garantisce la persistenza dei dati del portafoglio tra diverse sessioni dell'applicazione.
+
+---
+
+### **Stock.java**
+
+- **Descrizione**: Rappresenta un singolo titolo azionario o obbligazionario nel portafoglio. La classe include attributi come il ticker, la quantità, il prezzo di acquisto, il prezzo corrente e un flag per indicare se si tratta di un'obbligazione. Fornisce metodi per convertire l'oggetto `Stock` in un oggetto JSON e viceversa, facilitando la serializzazione e deserializzazione quando si salvano o si caricano i dati del portafoglio.
+
+---
+
+### **Server.java**
+
+- **Descrizione**: Questo file contiene il punto di ingresso principale dell'applicazione server. Avvia il server sulla porta 8080, inizializza un'istanza di `PortfolioManager` e ascolta le connessioni in arrivo dai client. Per ogni connessione, crea un nuovo thread `ClientHandler` per gestire la comunicazione senza bloccare il resto del server. Esegue un test iniziale dell'API chiamando `YahooFinanceAPI.testApi()` all'avvio.
+
+---
+
+### **ClientHandler.java**
+
+- **Descrizione**: Gestisce le richieste HTTP dei client. Questa classe analizza le richieste in entrata, sia GET che POST, e risponde di conseguenza. Serve file statici come `index.html` e `app.js`, e gestisce le chiamate API come l'aggiunta o la rimozione di azioni e l'aggiornamento dei prezzi nel portafoglio. Utilizza il `PortfolioManager` per eseguire operazioni sul portafoglio e invia risposte HTTP appropriate al client.
+
+---
+
+### **Portfolio.java**
+
+- **Descrizione**: Rappresenta il portafoglio dell'utente come una collezione di oggetti `Stock`. Fornisce metodi per ottenere la lista delle azioni e per creare un'istanza del portafoglio a partire da una stringa JSON. Viene utilizzata da `PortfolioManager` per gestire i dati delle azioni nel portafoglio.
+
+---
+
+### **prova.java**
+
+- **Descrizione**: Questo file sembra essere una classe di test utilizzata per scopi di debugging o verifica. Contiene un metodo `main` semplice che stampa le iterazioni da 0 a 9. Può essere utilizzato per assicurarsi che l'ambiente Java sia configurato correttamente e che il processo di compilazione ed esecuzione funzioni come previsto.
+
+---
+
+### **compile.sh**
+
+- **Descrizione**: Uno script Bash utilizzato per compilare i file sorgente Java del progetto. Prima rimuove tutti i file `.class` per garantire una compilazione pulita, quindi compila tutti i file Java nella directory specificata, includendo il file della libreria JSON `json-20240303.jar` nel classpath necessario per il parsing JSON.
+
+---
+
+### **index.html**
+
+- **Descrizione**: La pagina HTML principale che funge da interfaccia utente per l'applicazione web. Contiene form per aggiungere e rimuovere azioni dal portafoglio, un pulsante per aggiornare i prezzi e una sezione per visualizzare il portafoglio attuale. Include campi di input per il ticker, la quantità, il prezzo di acquisto e un'opzione per indicare se il titolo è un'obbligazione. Il file include anche il riferimento a `app.js` per aggiungere funzionalità interattive alla pagina.
+
+---
+
+### **app.js**
+
+- **Descrizione**: Contiene il codice JavaScript lato client che gestisce le interazioni dell'utente con l'interfaccia web. Imposta gli event listener per le sottomissioni dei form e i click dei pulsanti, invia richieste HTTP al server per aggiungere o rimuovere azioni e aggiornare i prezzi, e aggiorna la visualizzazione del portafoglio in base alle risposte del server. Utilizza la Fetch API per la comunicazione asincrona con il server e manipola il DOM per riflettere i dati aggiornati.
+
+---
+
+Questi file lavorano insieme per creare un'applicazione web che permette all'utente di gestire un portafoglio di titoli azionari e obbligazionari. Il backend Java gestisce la logica del server, la comunicazione con l'API esterna e la gestione del portafoglio, mentre i file HTML e JavaScript forniscono un'interfaccia utente interattiva.
+
+---
+
+**Note**:
+
+- **API Key**: Assicurati di avere sostituito `"YOUR_ALPHA_VANTAGE_API_KEY"` con la tua effettiva API key nel file `YahooFinanceAPI.java`.
+- **Percorsi dei File**: Verifica che tutti i percorsi dei file siano corretti e che i file siano posizionati nelle directory appropriate.
+- **Debugging**: Utilizza i messaggi di log presenti nel codice per aiutarti a individuare eventuali problemi durante l'esecuzione dell'applicazione.
+- **Esecuzione del Server**: Per avviare l'applicazione, esegui il server Java e accedi all'interfaccia web tramite un browser puntando all'URL `http://localhost:8080/`.
