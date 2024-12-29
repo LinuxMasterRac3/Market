@@ -8,14 +8,13 @@ RUN apk update && \
 WORKDIR /app
 
 # Crea la struttura delle directory
-RUN mkdir -p src/com/example/servlets lib web target/classes comandi data example/db
+RUN mkdir -p src/com/example/servlets lib web target/classes comandi data
 
 # Copia i file di origine e gli script
 COPY src/com/example/*.java src/com/example/
 COPY src/com/example/servlets/*.java src/com/example/servlets/
 COPY web/ web/
 COPY comandi/ comandi/
-COPY example/db/ example/db/
 
 # Assicurati che non vi siano COPY o RUN comandi che gestiscono file JSON
 

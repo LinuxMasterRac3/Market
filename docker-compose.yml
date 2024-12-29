@@ -6,8 +6,8 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - ./data:/data
-      - ./web:/app/web
+      - ./data:/data # Keep this for application data
+      - ./web:/app/web # Keep this for web files
     environment:
       - DATA_DIR=/data
       - SUPABASE_DB_HOST=aws-0-us-west-1.pooler.supabase.com
