@@ -40,14 +40,25 @@ public class WebServer {
             apiContext.setContextPath("/api");
             apiContext.getSessionHandler().setMaxInactiveInterval(1800); // 30 minutes in seconds
             
-            // Add health check servlet
+            // Add health check servlet with more detailed status
             apiContext.addServlet(new ServletHolder(new javax.servlet.http.HttpServlet() {
                 @Override
                 protected void doGet(javax.servlet.http.HttpServletRequest req, 
                                    javax.servlet.http.HttpServletResponse resp) 
                         throws javax.servlet.ServletException, java.io.IOException {
-                    resp.setStatus(200);
-                    resp.getWriter().write("OK");
+                    try {
+                        // Test database connection
+                        if (dbManager != null && dbManager.testConnection()) {
+                            resp.setStatus(200);
+                            resp.getWriter().write("OK - Database Connected");
+                        } else {
+                            resp.setStatus(500);
+                            resp.getWriter().write("ERROR - Database Not Connected");
+                        }
+                    } catch (Exception e) {
+                        resp.setStatus(500);
+                        resp.getWriter().write("ERROR - " + e.getMessage());
+                    }
                 }
             }), "/_ah/health");
             
