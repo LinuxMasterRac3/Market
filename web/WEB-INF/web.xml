@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
+    
+    <!-- ...existing code... -->
+    
+    <!-- Mappatura del LogoutServlet -->
+    <servlet>
+        <servlet-name>LogoutServlet</servlet-name>
+        <servlet-class>servlets.LogoutServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>LogoutServlet</servlet-name>
+        <url-pattern>/logout</url-pattern>
+    </servlet-mapping>
+    
+    <!-- Mappatura del TransactionHistoryServlet -->
+    <servlet>
+        <servlet-name>TransactionHistoryServlet</servlet-name>
+        <servlet-class>servlets.TransactionHistoryServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>TransactionHistoryServlet</servlet-name>
+        <url-pattern>/transactionHistory</url-pattern>
+    </servlet-mapping>
+    
+    <!-- Make sure all URLs are mapped correctly -->
+    <session-config>
+        <session-timeout>30</session-timeout>
+    </session-config>
+    
+    <!-- 
+    Se utilizzi i servlet standard, mappa TransactionHistoryServlet come segue:
+
+    <web-app>
+        <servlet>
+            <servlet-name>TransactionHistoryServlet</servlet-name>
+            <servlet-class>servlets.TransactionHistoryServlet</servlet-class>
+        </servlet>
+        <servlet-mapping>
+            <servlet-name>TransactionHistoryServlet</servlet-name>
+            <url-pattern>/transactionHistory</url-pattern>
+        </servlet-mapping>
+    </web-app>
+    -->
+
+    <!-- ...existing code... -->
+</web-app>

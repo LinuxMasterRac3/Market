@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Portafoglio </title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="styles.css"> <!-- Collegamento al CSS esterno -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Inclusione Chart.js -->
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Text&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</head>
+
+<body>
+    <!-- 1. Aggiunta della Navbar Modernizzata -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <a class="navbar-brand" href="#">Portafoglio</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <button id="themeToggleButton" class="btn btn-secondary mr-2">Dark Mode</button>
+                </li>
+                <li class="nav-item">
+                    <button id="logoutButton" class="btn btn-secondary">Logout</button>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Contenuto principale con maggiore spaziatura dall'alto -->
+    <div class="container-fluid" style="margin-top: 30px;">
+        <div id="authContainer" class="fade-in">
+            <!-- Modulo di Login -->
+            <div class="row mb-4">
+                <div class="col-md-12"> <!-- Changed from col-md-6 to col-md-12 -->
+                    <h2>Login</h2>
+                    <form id="loginForm" class="form">
+                        <div class="form-group">
+                            <input type="text" id="loginUsername" class="form-control" placeholder="Username" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" id="loginPassword" class="form-control" placeholder="Password"
+                                required>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">Login</button>
+                    </form>
+                </div>
+                <div class="col-md-12"> <!-- Changed from col-md-6 to col-md-12 -->
+                    <h2>Registrati </h2>
+                    <form id="registerForm" class="form">
+                        <div class="form-group">
+                            <input type="text" id="registerUsername" class="form-control" placeholder="Username"
+                                required>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" id="registerPassword" class="form-control" placeholder="Password"
+                                required>
+                        </div>
+                        <button type="submit" class="btn btn-success btn-block">Registrati </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sezione account con pulsante di logout -->
+        <div id="accountSection" style="display: none;">
+            <!-- Rimosso il bottone Logout dalla vecchia posizione -->
+        </div>
+
+        <!-- Portfolio content - initially hidden -->
+        <div id="portfolioContent" style="display: none;" class="fade-in">
+            <!-- Riepilogo Portafoglio e Distribuzione del Portafoglio -->
+            <div class="row">
+                <!-- Riepilogo Portafoglio -->
+                <div class="col-md-6 mb-4">
+                    <h1 class="text-center mb-4">Gestione Portafoglio</h1>
+
+                    <!-- Form per aggiungere un'azione -->
+                    <div class="row mb-4">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <form id="addStockForm" class="form">
+                                        <div class="form-group">
+                                            <input type="text" id="ticker" class="form-control" placeholder="Ticker"
+                                                required>
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="number" id="quantity" class="form-control"
+                                                placeholder="Quantità" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="number" id="purchasePrice" class="form-control"
+                                                placeholder="Prezzo di acquisto" required step="0.01">
+                                        </div>
+                                        <div class="form-group form-check">
+                                            <input type="checkbox" id="isBond" class="form-check-input">
+                                            <label for="isBond" class="form-check-label">Bond</label>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary btn-block">Aggiungi</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="portfolioSummary" class="card">
+                        <div class="card-body">
+                            <h2>Riepilogo Portafoglio</h2>
+                            <p id="totalValue">Valore Totale: €0.00</p>
+                            <p id="totalVariation">Variazione Totale: €0.00</p>
+                            <p id="totalTaxes">Tasse Totali: €0.00</p>
+                            <!-- Spostato il pulsante qui -->
+                            <div class="text-center mt-3">
+                                <button id="updatePricesButton" class="btn btn-success">
+                                    <i class="fas fa-sync-alt icon"></i>Aggiorna Prezzi
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Colonna Destra: Distribuzione del Portafoglio e Storico delle Transazioni -->
+                <div class="col-md-6 mb-4">
+                    <!-- Distribuzione del Portafoglio -->
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5><i class="fas fa-pie-chart icon"></i>Distribuzione del Portafoglio</h5>
+                            <canvas id="portfolioPieChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Storico delle Transazioni -->
+                    <div class="card">
+                        <div class="card-body">
+                            <h2>Storico delle Transazioni</h2>
+                            <div id="transactionHistory" class="transaction-history">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Tipo</th>
+                                            <th>Ticker</th>
+                                            <th>Quantità</th>
+                                            <th>Prezzo (€)</th>
+                                            <th>Data</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Contenuto dinamico -->
+                                        <tr>
+                                            <td colspan="5">
+                                                <p>Caricamento...</p>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Visualizzazione del portafoglio -->
+            <h2 class="mb-4">Portafoglio</h2>
+            <div id="portfolioList" class="row d-flex flex-row flex-wrap align-items-center"></div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS e dipendenze -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Script personalizzato -->
+    <script src="app.js"></script>
+</body>
+
+</html>

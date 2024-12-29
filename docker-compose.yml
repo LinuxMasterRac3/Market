@@ -1,0 +1,30 @@
+version: "3.8"
+
+services:
+  webapp:
+    build: .
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./data:/data
+      - ./web:/app/web
+    environment:
+      - DATA_DIR=/data
+      - SUPABASE_DB_HOST=aws-0-us-west-1.pooler.supabase.com
+      - SUPABASE_DB_PORT=6543
+      - SUPABASE_DB_NAME=postgres
+      - SUPABASE_DB_USER=postgres.nltoknxotsigtyrceuyt
+      - SUPABASE_DB_PASSWORD=${SUPABASE_DB_PASSWORD}
+    restart: unless-stopped
+    healthcheck:
+      test:
+        ["CMD", "wget", "-q", "--spider", "http://localhost:8080/_ah/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "200k"
+        max-file: "10"

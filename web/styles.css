@@ -1,0 +1,970 @@
+/* 1. CSS Variables */
+:root {
+  --primary-color: #3e8092; /* Verde chiaro */
+  --secondary-color: #fbe2a2; /* Verde tenue */
+  --accent-color: #f5cb5c; /* Giallo */
+  --background-color: #ffffff; /* Light mode background */
+  --text-color: #000000; /* Light mode text */
+  --card-background: #ffffff; /* Light mode card background */
+  --card-shadow: rgba(0, 0, 0, 0.1);
+  --border-radius: 10px;
+  --transition-speed: 0.3s;
+}
+
+/* 2. Base Styles */
+body {
+  font-family: "DM Serif Text", serif;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  transition: background-color var(--transition-speed),
+    color var(--transition-speed);
+}
+
+/* 3. Typography */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+label,
+span {
+  /* ...existing code... */
+}
+
+/* 4. Navbar Styles */
+.navbar {
+  margin-bottom: 30px;
+  background-color: var(--primary-color);
+  box-shadow: 0 4px 6px var(--card-shadow);
+}
+
+.navbar-brand,
+.navbar-nav .nav-link {
+  font-family: "Roboto Slab", serif;
+  font-size: 1.5rem;
+  color: var(--secondary-color) !important;
+  transition: color var(--transition-speed);
+}
+
+.navbar .nav-link:hover,
+body.dark-mode .navbar-nav .nav-link:hover {
+  color: var(--accent-color) !important;
+}
+
+/* 5. Button Styles */
+.btn,
+button {
+  border-radius: 25px;
+  padding: 10px 20px;
+  transition: background-color var(--transition-speed),
+    transform var(--transition-speed);
+  border: none;
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  color: #ffffff; /* Ensure text color is white */
+}
+
+.btn-primary:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
+}
+
+.btn-success {
+  background-color: #fbe2a2; /* Default background color */
+  color: #000000; /* Default text color */
+}
+
+.btn-success:hover {
+  background-color: #d4b14f; /* Hover background color */
+  opacity: 0.9;
+  transform: translateY(-2px);
+}
+
+.btn-warning {
+  background-color: var(--accent-color);
+  color: #000000; /* Ensure text color is readable */
+}
+
+.btn-warning:hover,
+.btn-warning:active,
+button.btn-warning:active,
+.btn-warning.btn:active {
+  opacity: 0.9;
+  transform: translateY(-2px);
+  background-color: var(
+    --accent-color
+  ) !important; /* Force yellow background */
+}
+
+.btn-block {
+  width: 100%;
+  /* ...existing code... */
+}
+
+/* 6. Form Styles */
+.form-control {
+  border-radius: 25px;
+  padding: 10px 15px;
+  border: 1px solid #bdc3c7;
+  transition: border-color var(--transition-speed),
+    box-shadow var(--transition-speed);
+  width: 100%; /* Ensure inputs take full width */
+}
+
+.form-control:focus {
+  border-color: #1abc9c;
+  box-shadow: 0 0 8px rgba(26, 188, 156, 0.5);
+}
+
+/* ...existing code... */
+
+/* 7. Card Styles */
+.card {
+  border: none;
+  border-radius: var(--border-radius);
+  box-shadow: 0 4px 8px var(--card-shadow);
+  background-color: var(--card-background);
+  transition: transform var(--transition-speed),
+    box-shadow var(--transition-speed);
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px var(--card-shadow);
+}
+
+/* 8. Animations */
+.fade-in,
+.slide-up {
+  animation: fadeIn 1s ease-in-out, slideUp 0.6s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+/* 9. Responsive Design - Mobile-First Approach */
+@media (max-width: 480px),
+  screen and (max-aspect-ratio: 9/16),
+  (max-width: 768px) and (max-width: 480px) and (max-aspect-ratio: 9/16),
+  screen and (min-aspect-ratio: 16/9) and (max-width: 480px) {
+  /* Consolidated mobile styles */
+
+  .container {
+    margin-top: 0;
+    padding: 10px;
+    max-width: 1400px; /* From larger screens */
+    /* ...existing code... */
+  }
+
+  .navbar-brand {
+    font-size: 1rem;
+    margin-bottom: 10px;
+  }
+
+  .navbar-nav .nav-item {
+    margin: 5px 0;
+    font-size: 1rem;
+    padding: 8px;
+  }
+
+  .container,
+  #portfolioSummary,
+  .form,
+  .stock-item,
+  #portfolioPieChart {
+    width: 100%;
+    padding: 10px;
+  }
+
+  #portfolioPieChart {
+    height: auto;
+    max-width: 100%;
+    padding: 10px;
+  }
+
+  .card-deck {
+    flex-direction: column;
+    display: block;
+    gap: 20px;
+  }
+
+  .card {
+    margin-bottom: 20px;
+    border-radius: 8px; /* Adjusted for consistency */
+  }
+
+  .transaction-history table th,
+  .transaction-history table td {
+    padding: 4px;
+    font-size: 0.85rem;
+  }
+
+  #portfolioList .stock-item {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 10px 0;
+  }
+
+  #portfolioList .stock-item span {
+    display: block;
+    margin-bottom: 4px;
+    flex: none; /* Prevent stretching */
+  }
+
+  .btn,
+  button {
+    width: 100%;
+    padding: 12px 24px;
+    font-size: 1rem;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-size: 1.25rem;
+  }
+
+  .ion-header,
+  .ion-content,
+  .ion-footer {
+    padding: 8px;
+  }
+
+  .row {
+    flex-direction: column !important;
+    align-items: center;
+  }
+
+  .text-center {
+    text-align: center;
+  }
+
+  .tooltip-inner {
+    max-width: 200px;
+  }
+
+  /* Remove duplicated media queries */
+  /* ...existing code... */
+
+  /* Optimize Portfolio Layout for Mobile */
+  #portfolioList {
+    display: flex;
+    flex-wrap: wrap; /* Allow items to wrap into multiple rows */
+    gap: 10px; /* Optional: Adds space between portfolio items */
+  }
+
+  #portfolioList .stock-item {
+    flex: 1 1 45%; /* Adjust width to allow two items per row */
+    /* ...existing code... */
+  }
+
+  /* ...existing code... */
+}
+
+/* 10. Custom Icons */
+.icon {
+  margin-right: 8px;
+  color: var(--accent-color);
+}
+
+/* 11. General Enhancements */
+body.dark-mode {
+  background-color: #1e1e1e; /* Tonalità più scura */
+  color: #ffffff; /* Testo bianco */
+
+  /* Rende il container scuro */
+  .container {
+    background-color: #242423;
+    color: #000000;
+  }
+
+  .card,
+  .card-body {
+    background-color: #2b2b2b;
+    color: #ffffff;
+  }
+
+  .form-control {
+    background-color: #242423;
+    color: #ffffff;
+    border-color: #3d566e;
+  }
+
+  .form-control:focus {
+    border-color: #1abc9c;
+    box-shadow: 0 0 8px rgba(26, 188, 156, 0.5);
+  }
+
+  /* Testi all'interno del container */
+  .card-title,
+  .card-text,
+  p,
+  .stock-info,
+  span,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  label {
+    color: #ffffff;
+  }
+
+  /* Pulsanti .btn-success in dark mode */
+  .btn-success,
+  .btn-success:hover {
+    background-color: var(--accent-color); /* Mantiene il giallo */
+    color: #000000; /* Testo nero */
+  }
+
+  /* Tabelle in dark mode */
+  table,
+  .table {
+    background-color: #2b2b2b;
+    color: #ffffff;
+  }
+
+  table th,
+  table td,
+  .table th,
+  .table td {
+    color: #ffffff;
+  }
+
+  /* Tooltip in dark mode */
+  .tooltip-inner {
+    background: rgba(255, 255, 255, 0.9); /* Sfondo chiaro */
+    color: #000000; /* Testo nero */
+  }
+
+  /* #portfolioSummary in dark mode */
+  #portfolioSummary {
+    background-color: #2b2b2b; /* Sfondo scuro */
+    color: #ffffff; /* Testo bianco */
+  }
+
+  /* #portfolioPieChart in dark mode */
+  #portfolioPieChart {
+    background-color: #2b2b2b; /* Sfondo scuro */
+  }
+
+  /* Liste in dark mode */
+  .list-group-item {
+    background-color: #343a40; /* Sfondo scuro */
+    color: #ffffff; /* Testo bianco */
+  }
+
+  /* Correggi eventuali proprietà errate */
+  .some-element {
+    /* ...existing code... */
+    /* Rimuovi o correggi proprietà errate */
+    /* Es: color: none; */
+  }
+}
+
+/* 12. Tables with Dark Background and White Text */
+.table {
+  width: 100%;
+  background-color: #2b2b2b;
+  color: #ffffff;
+  overflow-x: auto;
+}
+
+.table thead {
+  background-color: #3c3c3c;
+}
+
+.table tbody tr {
+  background-color: #2b2b2b !important;
+}
+
+.table th,
+.table td {
+  color: #ffffff;
+  padding: 8px;
+  text-align: left;
+}
+
+/* 13. Portfolio and Transaction Styles */
+#portfolioSummary,
+.card-body h5 {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.canvas-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+@media (min-width: 768px) {
+  #portfolioSummary,
+  .canvas-container {
+    height: auto;
+  }
+}
+
+/* 14. Button Enhancements */
+button#updatePricesButton {
+  width: 100%;
+}
+
+#themeToggleButton,
+#logoutButton {
+  background-color: var(
+    --primary-color
+  ); /* Stile di .btn-primary e .btn-success */
+  color: #ffffff; /* Testo bianco o nero */
+  border: none;
+  display: block; /* Stile di .btn-block */
+  width: 100%; /* Stile di .btn-block */
+  border-radius: 25px; /* Come .btn-primary */
+  padding: 10px 20px; /* Come .btn-primary */
+  transition: background-color var(--transition-speed),
+    transform var(--transition-speed);
+}
+
+#logoutButton {
+  background-color: var(--accent-color); /* Stile di .btn-success */
+  color: #000000; /* Testo nero come .btn-success */
+}
+
+/* Prevent table layout issues */
+.transaction-history th,
+.transaction-history td {
+  padding: 8px;
+  text-align: left;
+}
+
+/* Tooltip for tickers */
+.tooltip-inner {
+  max-width: 200px;
+}
+
+/* Placeholder Styles */
+.form-control::placeholder {
+  color: #6c757d;
+  opacity: 1; /* Firefox */
+}
+
+.form-control:-ms-input-placeholder {
+  /* Internet Explorer 10-11 */
+  color: #6c757d;
+}
+
+.form-control::-ms-input-placeholder {
+  /* Microsoft Edge */
+  color: #6c757d;
+}
+
+/* Doughnut Chart Layout */
+.card-body h2 {
+  margin-bottom: 20px;
+  text-align: center;
+  margin-top: 40px;
+}
+
+#portfolioPieChart {
+  width: 300px; /* Ridotto da 600px */
+  height: 300px; /* Ridotto per mantenere proporzioni */
+  margin: 0 auto;
+  padding: 10px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* 15. Media Queries Consolidated */
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1400px;
+  }
+
+  .card-deck {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+  }
+}
+
+/* 16. Button Color Forces */
+.btn-success.btn-block {
+  background-color: #fbe2a2; /* Desired background color */
+  color: #000000; /* Desired text color */
+}
+
+#updatePricesButton {
+  background-color: #f5cb5c; /* Desired background color */
+  color: #000000; /* Desired text color */
+  border: none; /* Remove border if necessary */
+}
+
+.btn-success.btn-block:hover,
+#updatePricesButton:hover {
+  background-color: #d4b14f; /* Desired hover background color */
+  color: #000000; /* Desired hover text color */
+}
+
+/* 17. Light Mode Table Styles */
+body:not(.dark-mode) .table {
+  background-color: #ffffff !important; /* Desired light background */
+  color: #000000 !important; /* Desired text color */
+}
+
+body:not(.dark-mode) .transaction-history {
+  background-color: #ffffff !important;
+}
+
+body:not(.dark-mode) .table thead,
+body:not(.dark-mode) .transaction-history thead {
+  background-color: #f8f9fa !important; /* Light header background */
+  color: #000000 !important; /* Header text color */
+}
+
+body:not(.dark-mode) .table tbody tr,
+body:not(.dark-mode) .transaction-history table {
+  background-color: #ffffff !important; /* Light row background */
+  color: #000000 !important;
+}
+
+body:not(.dark-mode) .table thead th,
+body:not(.dark-mode) .table tbody td {
+  color: #000000 !important;
+}
+
+/* 18. Ensure Full Width and Alignment for Stock Items */
+#portfolioList .stock-item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  /* Remove justify-content if it conflicts */
+  /* justify-content: space-between; */
+
+  /* Add padding for better spacing if needed */
+  padding: 10px 0;
+}
+
+#portfolioList .stock-actions {
+  margin-left: auto;
+  display: flex;
+  gap: 10px; /* Optional: Adds space between buttons */
+}
+
+#portfolioList .stock-item > span {
+  flex: none; /* Changed from 'flex: 1' to prevent stretching */
+}
+
+/* 19. Unify and Remove Duplicate Styles */
+.card,
+.btn {
+  transition: transform var(--transition-speed),
+    box-shadow var(--transition-speed);
+}
+
+.fade-in,
+.slide-up {
+  animation: fadeIn 1s ease-in-out, slideUp 0.6s ease-in-out;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(30px);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+/* 20. Ion-like Classes for Mobile-Friendly Layout */
+.ion-page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.ion-header {
+  background-color: var(--primary-color);
+  padding: 10px;
+  color: var(--secondary-color);
+  box-shadow: 0 4px 6px var(--card-shadow);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ion-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+}
+
+.ion-footer {
+  background-color: var(--primary-color);
+  color: var(--secondary-color);
+  padding: 10px;
+  box-shadow: 0 -4px 6px var(--card-shadow);
+  text-align: center;
+}
+
+.ion-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  color: #ffffff;
+  background-color: var(--accent-color);
+  padding: 8px 16px;
+  border-radius: 25px;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.ion-button:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
+}
+
+@media (max-width: 600px) {
+  .ion-header,
+  .ion-content,
+  .ion-footer {
+    padding: 8px;
+    /* ...existing code... */
+  }
+}
+
+/* 21. Dedicated Mobile Layout for Small Devices */
+@media (max-width: 480px) {
+  /* Reset margins and padding for more space */
+  .container {
+    margin-top: 0;
+    padding: 10px;
+  }
+
+  /* Force single-column layout */
+  .row {
+    flex-direction: column !important;
+  }
+
+  /* Slightly larger buttons for touch targets */
+  .btn,
+  button {
+    font-size: 1rem;
+    padding: 12px 24px;
+  }
+
+  /* Reduce font sizes for headings */
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-size: 1.25rem;
+  }
+
+  /* Hide or collapse any sidebar-like elements if present */
+  /* .sidebar {
+    display: none;
+  } */
+
+  /* ...existing code... */
+}
+
+@media (max-width: 480px) {
+  .container {
+    margin-top: 15px;
+    padding: 10px;
+  }
+  .navbar-brand {
+    font-size: 1rem;
+  }
+  /* ...existing code... */
+}
+
+@media screen and (max-aspect-ratio: 9/16) {
+  .container {
+    margin-top: 0;
+    padding: 10px;
+  }
+  .row {
+    flex-direction: column !important;
+  }
+  .btn,
+  button {
+    font-size: 1rem;
+    padding: 12px 24px;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-size: 1.25rem;
+  }
+  /* ...existing code... */
+}
+
+@media screen and (max-aspect-ratio: 9/16) {
+  .container {
+    margin-top: 0;
+    padding: 10px;
+  }
+  .row {
+    flex-direction: column !important;
+  }
+  .btn,
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-size: 1.25rem;
+  }
+  /* ...existing code... */
+}
+
+/* 22. Additional Mobile Optimizations */
+@media screen and (min-aspect-ratio: 16/9) and (max-width: 480px) {
+  /* Further adjustments for smaller mobile screens */
+
+  .navbar {
+    padding: 10px;
+  }
+
+  .navbar-brand {
+    font-size: 1rem;
+  }
+
+  .navbar-nav .nav-link {
+    font-size: 1rem;
+    padding: 8px;
+  }
+
+  /* Optimize forms */
+  form {
+    padding: 10px;
+  }
+
+  .form-control {
+    padding: 12px; /* Aggiunto il punto e virgola mancante */
+    font-size: 1rem;
+  }
+
+  /* Ensure buttons are full-width */
+  .btn-block {
+    width: 100%;
+  }
+
+  /* Adjust card layouts */
+  .card {
+    margin-bottom: 15px;
+  }
+
+  /* Simplify transaction history */
+  .transaction-history table {
+    width: 100%;
+  }
+
+  /* ...existing code... */
+}
+
+/* 23. Optimize Flex and Grid Layouts for Mobile */
+@media screen and (max-aspect-ratio: 9/16) {
+  /* Ensure flex containers stack vertically */
+  .row {
+    flex-direction: column !important;
+    align-items: center;
+  }
+
+  /* Center content */
+  .text-center {
+    text-align: center;
+  }
+
+  /* Optimize card decks */
+  .card-deck {
+    display: block;
+  }
+
+  /* ...existing code... */
+}
+
+/* 24. Restore Two-Column Layout for Desktop */
+@media (min-width: 992px) {
+  .container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  /* Ensure portfolio summary and distribution occupy half the width each */
+  .col-md-6 {
+    flex: 0 0 48%;
+    max-width: 48%;
+  }
+
+  /* Adjust margin and padding for desktop */
+  .mb-4 {
+    margin-bottom: 1.5rem;
+  }
+
+  /* Ensure forms are properly spaced */
+  .form-group {
+    margin-bottom: 1rem;
+  }
+
+  /* Style the transaction history for desktop */
+  .transaction-history {
+    max-height: none; /* Remove fixed height */
+    overflow-y: visible;
+  }
+
+  /* ...existing code... */
+}
+
+/* 25. Maintain Single-Column Layout for Mobile */
+@media (max-width: 991px) {
+  .container {
+    flex-direction: column;
+  }
+
+  .col-md-6 {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+
+  /* ...existing mobile styles... */
+}
+
+/* 26. Optimize Login Form Layout */
+@media (min-width: 992px) {
+  #authContainer .row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+  }
+
+  #authContainer .col-md-6 {
+    max-width: 45%; /* Optional: Adjust to desired width */
+  }
+
+  /* Adjust form card sizes */
+  #authContainer .card {
+    margin: 0 auto;
+  }
+
+  /* ...existing code... */
+}
+
+/* 27. Prevent Potential Conflicts */
+#authContainer .form {
+  /* Ensure forms take full height within their columns if needed */
+  height: 100%;
+}
+
+/* 28. Enhance Portfolio Content Layout */
+@media (min-width: 992px) {
+  #portfolioContent .row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  #portfolioContent .col-md-6 {
+    max-width: 48%;
+  }
+}
+
+@media (max-width: 991px) {
+  #portfolioContent .row {
+    flex-direction: column;
+  }
+
+  #portfolioContent .col-md-6 {
+    max-width: 100%;
+  }
+}
+
+#portfolioContent {
+  /* ...existing code... */
+  padding-left: 20px;
+  padding-right: 20px;
+  /* ...existing code... */
+}
+
+/* 29. Improve Button Spacing and Sizing */
+@media (min-width: 992px) {
+  .btn {
+    padding: 12px 24px;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 991px) {
+  .btn {
+    width: 100%;
+    padding: 10px 20px;
+    font-size: 0.9rem;
+  }
+}
+
+/* 30. Adjust Navbar for Better Mobile Experience */
+@media (max-width: 991px) {
+  .navbar-brand {
+    font-size: 1.25rem;
+  }
+
+  .navbar-nav .nav-item {
+    margin: 5px 0;
+  }
+}
+
+/* 31. Ensure Tables are Responsive */
+.table {
+  width: 100%;
+  overflow-x: auto;
+}
+
+@media (max-width: 768px) {
+  .transaction-history table {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-aspect-ratio: 9/16) {
+  /* Adjust navbar to stack items vertically and occupy full width */
+  .navbar-nav {
+    flex-direction: column !important;
+    width: 100%;
+  }
+
+  .navbar-nav .nav-link {
+    display: block;
+    width: 100%;
+    text-align: center;
+    font-size: 1rem; /* Maintain consistent font size */
+    padding: 10px 0; /* Adjust padding for better spacing */
+  }
+
+  /* ...existing mobile styles... */
+}
