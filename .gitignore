@@ -1,35 +1,6 @@
-# Ignora file di sistema
-.DS_Store
-Thumbs.db
 
-# Ignora cartelle non necessarie
-Downloads/
-Pictures/
-
-# Directory dei dati PostgreSQL
-postgres-data/
-postgres-data/*
-
-# Altri file e cartelle da ignorare
-*.log
-.env
-target/
-*.class
-lib/
-data/
-
-# Directory di build e dipendenze
-node_modules/
-dist/
-build/
-target/
-
-# Environment variables
 .env
 .env.local
 .env.*
+.env.*.local
 
-# Other sensitive files
-*.pem
-*.key
-secrets/
