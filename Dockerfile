@@ -34,7 +34,6 @@ ENV DATA_DIR=/data
 ENV DATA_DIR=/data
 
 # Cloud Run specific configurations
-ENV PORT=8080
 EXPOSE ${PORT}
 
 # Make web directory
@@ -48,7 +47,6 @@ RUN chmod -R 755 /app
 
 # Set Supabase-specific environment variables (excluding sensitive data)
 ENV SUPABASE_DB_HOST=nltoknxotsigtyrceuyt.supabase.co
-ENV SUPABASE_DB_PORT=5432
 ENV SUPABASE_DB_USER=postgres
 ENV SUPABASE_DB_NAME=postgres
 # Do NOT set SUPABASE_DB_PASSWORD here - it will be provided at runtime
