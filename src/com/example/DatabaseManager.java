@@ -248,6 +248,18 @@ public class DatabaseManager implements AutoCloseable {
         }
     }
 
+    public boolean testConnection() {
+        try {
+            if (connection == null || connection.isClosed()) {
+                connect();
+            }
+            return true;
+        } catch (SQLException e) {
+            System.err.println("Database connection test failed: " + e.getMessage());
+            return false;
+        }
+    }
+
     @Override
     public void close() throws SQLException {
         if (connection != null) {

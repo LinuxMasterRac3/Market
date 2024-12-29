@@ -33,13 +33,18 @@ ENV DATA_DIR=/data
 # Definisce un volume per i dati persistenti
 ENV DATA_DIR=/data
 
-# Explicitly set and expose the port
+# Cloud Run specific configurations
 ENV PORT=8080
 EXPOSE ${PORT}
 
-# Add healthcheck
-HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
-    CMD wget -q --spider http://localhost:${PORT}/_ah/health || exit 1
+# Make web directory
+RUN mkdir -p /app/web
+
+# Copy web content
+COPY web/ /app/web/
+
+# Set correct permissions
+RUN chmod -R 755 /app
 
 # Set Supabase-specific environment variables (excluding sensitive data)
 ENV SUPABASE_DB_HOST=nltoknxotsigtyrceuyt.supabase.co
@@ -50,4 +55,9 @@ ENV SUPABASE_DB_NAME=postgres
 
 VOLUME ["/data"]
 
-CMD ["/bin/bash", "comandi/run.sh"]
+# Simplify the CMD to ensure proper startup
+CMD exec java -cp "lib/*:target/classes" \
+    -Dserver.address=0.0.0.0 \
+    -Djetty.http.port=${PORT} \
+    -Djetty.http.host=0.0.0.0 \
+    com.example.WebServer
