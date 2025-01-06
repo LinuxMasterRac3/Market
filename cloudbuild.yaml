@@ -51,17 +51,5 @@ steps:
         SUPABASE_DB_NAME=postgres,
         SUPABASE_DB_USER=postgres.nltoknxotsigtyrceuyt
 
-  # Add firewall rule to allow TCP traffic on port 8080
-  - name: "gcr.io/cloud-builders/gcloud"
-    args:
-      - "compute"
-      - "firewall-rules"
-      - "create"
-      - "allow-8080"
-      - "--allow=tcp:8080"
-      - "--target-tags=allow-8080"
-      - "--description=Allow incoming traffic on port 8080 for web application"
-      - "--network=default"
-
 images:
   - "gcr.io/${_PROJECT_ID}/gestionale:$COMMIT_SHA"

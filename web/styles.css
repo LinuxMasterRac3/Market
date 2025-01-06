@@ -122,14 +122,17 @@ button.btn-warning:active,
 
 /* ...existing code... */
 
-/* 7. Card Styles */
+/* 7. Card Styles - Modified */
 .card {
   border: none;
-  border-radius: var(--border-radius);
+  border-radius: var(
+    --border-radius
+  ) !important; /* Added !important to ensure it's always applied */
   box-shadow: 0 4px 8px var(--card-shadow);
   background-color: var(--card-background);
   transition: transform var(--transition-speed),
     box-shadow var(--transition-speed);
+  overflow: hidden; /* Add this to ensure content respects border radius */
 }
 
 .card:hover {
@@ -209,7 +212,6 @@ button.btn-warning:active,
 
   .card {
     margin-bottom: 20px;
-    border-radius: 8px; /* Adjusted for consistency */
   }
 
   .transaction-history table th,

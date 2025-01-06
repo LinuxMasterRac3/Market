@@ -15,6 +15,7 @@ services:
       - SUPABASE_DB_NAME=postgres
       - SUPABASE_DB_USER=postgres.nltoknxotsigtyrceuyt
       - SUPABASE_DB_PASSWORD=${SUPABASE_DB_PASSWORD}
+      - PORT=8080 # Explicitly set PORT
     restart: unless-stopped
     healthcheck:
       test:
