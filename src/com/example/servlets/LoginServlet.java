@@ -22,6 +22,8 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) 
             throws IOException {
+        response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
+        response.setHeader("Access-Control-Allow-Credentials", "true");
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         
@@ -33,18 +35,28 @@ public class LoginServlet extends HttpServlet {
         try {
             if (userManager.authenticate(username, password)) {
                 SessionManager.createSession(request, username);
-                response.setStatus(HttpServletResponse.SC_OK);
-                response.getWriter().write("{\"success\":true,\"message\":\"Login successful\"}");
-                System.out.println("Login successful for user: " + username);
+                // Include redirect URL in response
+                String jsonResponse = "{\"success\":true,\"message\":\"Login successful\",\"redirect\":\"/portfolio.html\"}";
+                response.getWriter().write(jsonResponse);
+                System.out.println("Login successful, redirecting to: /portfolio.html");
             } else {
-                response.setStatus(HttpServletResponse.SC_OK);
-                response.getWriter().write("{\"success\":false,\"message\":\"Invalid credentials\"}");
-                System.out.println("Login failed for user: " + username);
+                String jsonResponse = "{\"success\":false,\"message\":\"Invalid credentials\"}";
+                response.getWriter().write(jsonResponse);
+                System.out.println("Login failed: " + jsonResponse);
             }
         } catch (SQLException e) {
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            response.getWriter().write("{\"success\":false,\"message\":\"Database error: " + e.getMessage() + "\"}");
-            System.err.println("Database error during login: " + e.getMessage());
+            String jsonResponse = "{\"success\":false,\"message\":\"Database error\"}";
+            response.getWriter().write(jsonResponse);
+            System.err.println("Database error: " + e.getMessage());
         }
+    }
+
+    @Override
+    protected void doOptions(HttpServletRequest request, HttpServletResponse response) {
+        response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
+        response.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+        response.setHeader("Access-Control-Allow-Headers", "Content-Type");
+        response.setHeader("Access-Control-Allow-Credentials", "true");
+        response.setStatus(HttpServletResponse.SC_OK);
     }
 }

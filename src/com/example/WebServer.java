@@ -36,12 +36,18 @@ public class WebServer {
             connector.setPort(port);
             server.addConnector(connector);
             
-            ServletContextHandler apiContext = new ServletContextHandler(ServletContextHandler.SESSIONS);
-            apiContext.setContextPath("/api");
-            apiContext.getSessionHandler().setMaxInactiveInterval(1800); // 30 minutes in seconds
-            
+            // Create resource handler for static files first
+            ResourceHandler resourceHandler = new ResourceHandler();
+            resourceHandler.setDirectoriesListed(false);
+            resourceHandler.setWelcomeFiles(new String[]{"registration.html"});
+            resourceHandler.setResourceBase("web");
+
+            // Create servlet context handler
+            ServletContextHandler servletHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
+            servletHandler.setContextPath("/");
+
             // Add health check servlet with more detailed status
-            apiContext.addServlet(new ServletHolder(new javax.servlet.http.HttpServlet() {
+            servletHandler.addServlet(new ServletHolder(new javax.servlet.http.HttpServlet() {
                 @Override
                 protected void doGet(javax.servlet.http.HttpServletRequest req, 
                                    javax.servlet.http.HttpServletResponse resp) 
@@ -65,35 +71,30 @@ public class WebServer {
             // Configure LoginServlet with UserManager
             LoginServlet loginServlet = new LoginServlet();
             loginServlet.setUserManager(userManager);
-            apiContext.addServlet(new ServletHolder(loginServlet), "/login");
+            servletHandler.addServlet(new ServletHolder(loginServlet), "/login");
 
             // Configure RegisterServlet
             RegisterServlet registerServlet = new RegisterServlet();
             registerServlet.setUserManager(userManager);
-            apiContext.addServlet(new ServletHolder(registerServlet), "/register");
+            servletHandler.addServlet(new ServletHolder(registerServlet), "/register");
 
             // Configure CheckSessionServlet
             CheckSessionServlet checkSessionServlet = new CheckSessionServlet();
-            apiContext.addServlet(new ServletHolder(checkSessionServlet), "/checkSession");
+            servletHandler.addServlet(new ServletHolder(checkSessionServlet), "/checkSession");
             
             // Configure PortfolioServlet with both managers and all mappings
             PortfolioServlet portfolioServlet = new PortfolioServlet(portfolioManager);
             portfolioServlet.setUserManager(userManager);
             ServletHolder portfolioHolder = new ServletHolder(portfolioServlet);
-            apiContext.addServlet(portfolioHolder, "/portfolio/*");  // Changed to catch all portfolio endpoints
+            servletHandler.addServlet(portfolioHolder, "/portfolio/*");  // Changed to catch all portfolio endpoints
             
             // Configure LogoutServlet
             LogoutServlet logoutServlet = new LogoutServlet();
-            apiContext.addServlet(new ServletHolder(logoutServlet), "/logout");
+            servletHandler.addServlet(new ServletHolder(logoutServlet), "/logout");
             
-            // Create the ResourceHandler for static files
-            ResourceHandler resourceHandler = new ResourceHandler();
-            resourceHandler.setDirectoriesListed(false);
-            resourceHandler.setWelcomeFiles(new String[]{"index.html"});
-            resourceHandler.setResourceBase("web");
-            
+            // Configure handler order - static files first, then servlets
             HandlerList handlers = new HandlerList();
-            handlers.setHandlers(new Handler[]{resourceHandler, apiContext});
+            handlers.setHandlers(new Handler[]{resourceHandler, servletHandler});
             
             server.setHandler(handlers);
             

@@ -28,24 +28,31 @@ public class Portfolio {
     public void setTransactions(List<Transaction> transactions) { this.transactions = transactions; }
 
     public String toJsonString() {
-        ObjectNode json = mapper.createObjectNode();
-        
-        ArrayNode stocksArray = mapper.createArrayNode();
-        for (Stock stock : stocks) {
-            stocksArray.add(stock.toJsonNode());
-        }
-        json.set("stocks", stocksArray);
-        
-        ArrayNode transactionsArray = mapper.createArrayNode();
-        for (Transaction tx : transactions) {
-            transactionsArray.add(tx.toJsonNode());
-        }
-        json.set("transactions", transactionsArray);
-        
         try {
-            return mapper.writeValueAsString(json);
+            ObjectNode json = mapper.createObjectNode();
+            
+            ArrayNode stocksArray = mapper.createArrayNode();
+            if (stocks != null) {
+                for (Stock stock : stocks) {
+                    stocksArray.add(stock.toJsonNode());
+                }
+            }
+            json.set("stocks", stocksArray);
+            
+            ArrayNode transactionsArray = mapper.createArrayNode();
+            if (transactions != null) {
+                for (Transaction tx : transactions) {
+                    transactionsArray.add(tx.toJsonNode());
+                }
+            }
+            json.set("transactions", transactionsArray);
+            
+            String jsonString = mapper.writeValueAsString(json);
+            System.out.println("Generated portfolio JSON: " + jsonString);
+            return jsonString;
         } catch (Exception e) {
-            return "{\"error\":\"Error converting portfolio to JSON\"}";
+            System.err.println("Error converting portfolio to JSON: " + e.getMessage());
+            return "{\"error\":\"Error converting portfolio to JSON\", \"stocks\":[], \"transactions\":[]}";
         }
     }
 }

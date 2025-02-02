@@ -1,30 +1,40 @@
-package com.example;
+package com.example.servlets;
 
+import com.example.SessionManager;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import javax.servlet.http.*;
 import java.io.IOException;
 
 @WebServlet("/checkSession")
 public class CheckSessionServlet extends HttpServlet {
+    
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws IOException {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
+        response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
+        response.setHeader("Access-Control-Allow-Credentials", "true");
 
-        HttpSession session = request.getSession(false);
         String username = SessionManager.getUserFromSession(request);
+        System.out.println("Checking session for: " + username);
 
-        if (username != null) {
-            System.out.println("Valid session found for user: " + username);
-            response.getWriter().write("{\"authenticated\":true,\"username\":\"" + username + "\"}");
-        } else {
-            System.out.println("No valid session found");
-            response.setStatus(HttpServletResponse.SC_OK);
-            response.getWriter().write("{\"authenticated\":false}");
-        }
+        String jsonResponse = String.format(
+            "{\"authenticated\": %b, \"username\": \"%s\"}",
+            username != null,
+            username != null ? username : ""
+        );
+
+        System.out.println("Session check response: " + jsonResponse);
+        response.getWriter().write(jsonResponse);
+    }
+
+    @Override
+    protected void doOptions(HttpServletRequest request, HttpServletResponse response) {
+        response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
+        response.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
+        response.setHeader("Access-Control-Allow-Headers", "Content-Type");
+        response.setHeader("Access-Control-Allow-Credentials", "true");
+        response.setStatus(HttpServletResponse.SC_OK);
     }
 }

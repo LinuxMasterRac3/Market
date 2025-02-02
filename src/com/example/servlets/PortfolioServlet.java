@@ -1,10 +1,12 @@
 package com.example.servlets;
 
 import com.example.*;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 import java.io.IOException;
 import java.sql.SQLException;
 
+@WebServlet("/portfolio")
 public class PortfolioServlet extends HttpServlet {
     private PortfolioManager portfolioManager;
     private UserManager userManager;
@@ -36,17 +38,33 @@ public class PortfolioServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        HttpSession session = request.getSession(false);
-        if (session == null || session.getAttribute("username") == null) {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Not logged in");
+        System.out.println("Portfolio GET request received");
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
+        response.setHeader("Access-Control-Allow-Credentials", "true");
+
+        String username = SessionManager.getUserFromSession(request);
+        System.out.println("Username from session: " + username);
+
+        if (username == null) {
+            System.err.println("No user session found");
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("{\"error\":\"Not logged in\"}");
             return;
         }
 
-        String username = (String) session.getAttribute("username");
-        Portfolio portfolio = portfolioManager.getPortfolio(username);
-        String portfolioJson = portfolio.toJsonString();
-        response.setContentType("application/json");
-        response.getWriter().write(portfolioJson);
+        try {
+            Portfolio portfolio = portfolioManager.getPortfolio(username);
+            String portfolioJson = portfolio != null ? portfolio.toJsonString() : "{\"stocks\":[],\"transactions\":[]}";
+            System.out.println("Sending portfolio JSON: " + portfolioJson);
+            response.getWriter().write(portfolioJson);
+        } catch (Exception e) {
+            System.err.println("Error retrieving portfolio: " + e.getMessage());
+            e.printStackTrace();
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.getWriter().write("{\"error\":\"" + e.getMessage() + "\"}");
+        }
     }
 
     @Override

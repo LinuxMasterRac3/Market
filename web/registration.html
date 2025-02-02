@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Portafoglio </title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="styles.css"> <!-- Collegamento al CSS esterno -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Inclusione Chart.js -->
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Text&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</head>
+
+<body>
+    <!-- 1. Aggiunta della Navbar Modernizzata -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <a class="navbar-brand" href="#portfolio.html">Portafoglio</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <a class="navbar-brand" href="cash.html">Gestione CashFlow</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <button id="themeToggleButton" class="btn btn-secondary mr-2">Dark Mode</button>
+                </li>
+                <li class="nav-item">
+                    <button id="logoutButton" class="btn btn-secondary">Logout</button>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container-fluid" style="margin-top: 30px;">
+        <div id="authContainer" class="fade-in">
+            <!-- Modulo di Login -->
+            <div class="row mb-4">
+                <div class="col-md-12">
+                    <h2>Login</h2>
+                    <form id="loginForm" class="form">
+                        <div class="form-group">
+                            <input type="text" id="loginUsername" class="form-control" placeholder="Username" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" id="loginPassword" class="form-control" placeholder="Password"
+                                required>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">Login</button>
+                    </form>
+                </div>
+                <div class="col-md-12">
+                    <h2>Registrati</h2>
+                    <form id="registerForm" class="form">
+                        <div class="form-group">
+                            <input type="text" id="registerUsername" class="form-control" placeholder="Username"
+                                required>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" id="registerPassword" class="form-control" placeholder="Password"
+                                required>
+                        </div>
+                        <button type="submit" class="btn btn-success btn-block">Registrati</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            // Hide auth container initially
+            document.getElementById("authContainer").style.display = "none";
+
+            async function checkSession() {
+                try {
+                    const response = await fetch("/checkSession", {
+                        method: "GET",
+                        credentials: "include"
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Session check failed');
+                    }
+
+                    const data = await response.json();
+                    console.log("Session check response:", data);
+
+                    if (data.authenticated) {
+                        console.log("User is already authenticated, redirecting...");
+                        window.location.replace("/portfolio.html");
+                        return;
+                    }
+
+                    // Show login form if not authenticated
+                    console.log("User not authenticated, showing login form");
+                    document.getElementById("authContainer").style.display = "block";
+                } catch (error) {
+                    console.error("Session check error:", error);
+                    // Show login form on error
+                    document.getElementById("authContainer").style.display = "block";
+                }
+            }
+
+            // Check session on page load
+            window.addEventListener('DOMContentLoaded', checkSession);
+
+            // Handle login form submission
+            document.getElementById("loginForm").addEventListener("submit", async function (e) {
+                e.preventDefault();
+                const username = document.getElementById("loginUsername").value;
+                const password = document.getElementById("loginPassword").value;
+
+                console.log("Attempting login for:", username);
+                try {
+                    const response = await fetch("/login", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/x-www-form-urlencoded",
+                            "Accept": "application/json"
+                        },
+                        body: new URLSearchParams({ username, password }).toString(),
+                        credentials: "include"
+                    });
+
+                    const text = await response.text();
+                    console.log("Login response:", text);
+
+                    const result = JSON.parse(text);
+                    if (result.success) {
+                        console.log("Login successful, redirecting to portfolio");
+                        // Use absolute path and replace
+                        window.location.replace("/portfolio.html");
+                    } else {
+                        alert(result.message || "Login failed");
+                    }
+                } catch (error) {
+                    console.error("Login error:", error);
+                    alert("Login failed: " + error.message);
+                }
+            });
+
+            // Handle registration form submission
+            document.getElementById("registerForm").addEventListener("submit", async function (e) {
+                e.preventDefault();
+                const username = document.getElementById("registerUsername").value;
+                const password = document.getElementById("registerPassword").value;
+
+                console.log("Attempting registration for:", username);
+                try {
+                    const response = await fetch("/register", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/x-www-form-urlencoded",
+                            "Accept": "application/json"
+                        },
+                        body: new URLSearchParams({
+                            username: username,
+                            password: password
+                        }),
+                        credentials: "include"
+                    });
+
+                    console.log("Registration response status:", response.status);
+                    const text = await response.text();
+                    console.log("Raw response:", text);
+
+                    try {
+                        const result = JSON.parse(text);
+                        if (result.success) {
+                            alert("Registration successful!");
+                            document.getElementById("registerForm").reset();
+                        } else {
+                            alert(result.message || "Registration failed");
+                        }
+                    } catch (parseError) {
+                        console.error("Parse error:", parseError);
+                        alert("Server response error: " + text);
+                    }
+                } catch (error) {
+                    console.error("Registration error:", error);
+                    alert("Registration failed: " + error.message);
+                }
+            });
+        </script>
+</body>
+
+</html>

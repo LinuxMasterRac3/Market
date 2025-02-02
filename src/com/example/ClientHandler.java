@@ -77,10 +77,11 @@ public class ClientHandler implements Runnable {
                     handleModifyStock(params, out);
                 } else if (method.equals("POST") && path.equals("/updatePrices")) {
                     handleUpdatePrices(out);
+                } else if (method.equals("POST") && path.equals("/logout")) {
+                    handleLogout(out);
                 } else if (method.equals("GET")) {
-                    // Se la richiesta è "/", reindirizza a "/index.html".
                     if (path.equals("/")) {
-                        path = "/index.html";
+                        path = "/portfolio.html";
                     }
 
                     // Tenta di servire un file statico dalla cartella "web"
@@ -265,6 +266,22 @@ public class ClientHandler implements Runnable {
         System.out.println("Prezzi aggiornati per utente: " + currentUser);
     }
 
+    private void handleLogout(BufferedWriter out) throws IOException {
+        if (currentUser == null) {
+            sendResponse(out, 401, "Unauthorized", "{\"error\": \"No user logged in\"}");
+            return;
+        }
+        try {
+            userManager.logout(currentUser);
+            currentUser = null;
+            sendResponse(out, 200, "OK", "{\"success\":true,\"message\":\"Logout successful\"}");
+            System.out.println("Logout successful");
+        } catch (SQLException e) {
+            sendResponse(out, 500, "Internal Server Error", "{\"error\": \"" + e.getMessage() + "\"}");
+            System.err.println("Errore nel logout: " + e.getMessage());
+        }
+    }
+
     private Map<String, String> parseParameters(String body) throws IOException {
         Map<String, String> params = new HashMap<>();
         if (body == null || body.isEmpty()) {
@@ -281,8 +298,12 @@ public class ClientHandler implements Runnable {
     }
 
     private void sendResponse(BufferedWriter out, int statusCode, String statusText, String body) throws IOException {
+        // Replace wildcard with a specific origin (adjust the value as needed)
+        String allowedOrigin = "http://localhost:8080"; // <-- update to your client’s origin
+
         out.write("HTTP/1.1 " + statusCode + " " + statusText + "\r\n");
-        out.write("Access-Control-Allow-Origin: *\r\n");
+        out.write("Access-Control-Allow-Origin: " + allowedOrigin + "\r\n");
+        out.write("Access-Control-Allow-Credentials: true\r\n");
         out.write("Content-Type: application/json\r\n");
         out.write("Content-Length: " + body.getBytes("UTF-8").length + "\r\n");
         out.write("\r\n");
@@ -294,7 +315,7 @@ public class ClientHandler implements Runnable {
 
     private void serveStaticFile(String path, BufferedWriter out) throws IOException {
         if (path.equals("/")) {
-            path = "/index.html";
+            path = "/portfolio.html";
         }
 
         String contentType;

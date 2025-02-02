@@ -1,31 +1,48 @@
 document.addEventListener("DOMContentLoaded", function () {
-  // Aggiungi questa funzione all'inizio
+  // Remove createAuthForms and related functions
+
   async function checkSession() {
     try {
-      const response = await fetch("/api/checkSession", {
+      const response = await fetch("/checkSession", {
         method: "GET",
-        credentials: "same-origin",
+        credentials: "include",
       });
 
-      if (response.ok) {
-        const data = await response.json();
-        if (data.authenticated) {
-          document.getElementById("portfolioList").style.display = "block";
-          document.getElementById("portfolioContent").style.display = "block";
-          document.getElementById("accountSection").style.display = "block";
-          showAuthForms(false);
-          await fetchPortfolio();
-          return;
-        }
+      if (!response.ok || !(await response.json()).authenticated) {
+        window.location.replace("/registration.html");
+        return;
       }
-      showAuthForms(true);
+
+      // If authenticated, show portfolio
+      document.getElementById("portfolioContent").style.display = "block";
+      await fetchPortfolio();
     } catch (error) {
-      console.error("Errore nel controllo della sessione:", error);
-      showAuthForms(true);
+      console.error("Session check error:", error);
+      window.location.replace("/registration.html");
     }
   }
 
-  // Chiama checkSession all'avvio
+  // Handle logout
+  document
+    .getElementById("logoutButton")
+    .addEventListener("click", async function () {
+      try {
+        const response = await fetch("/logout", {
+          method: "POST",
+          credentials: "include",
+        });
+
+        if (response.ok) {
+          window.location.replace("/registration.html");
+        } else {
+          console.error("Logout failed");
+        }
+      } catch (error) {
+        console.error("Logout error:", error);
+      }
+    });
+
+  // Initialize portfolio
   checkSession();
 
   // Crea dinamicamente l'overlay di caricamento (spinner)
@@ -59,7 +76,7 @@ document.addEventListener("DOMContentLoaded", function () {
       data.append("isBond", isBond);
 
       try {
-        const response = await fetch("/api/portfolio", {
+        const response = await fetch("/portfolio", {
           // Changed endpoint
           method: "POST",
           headers: {
@@ -86,76 +103,8 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
 
-  document
-    .getElementById("loginForm")
-    .addEventListener("submit", async function (e) {
-      e.preventDefault();
-      const username = document.getElementById("loginUsername").value;
-      const password = document.getElementById("loginPassword").value;
-
-      const data = new URLSearchParams();
-      data.append("username", username);
-      data.append("password", password);
-
-      try {
-        const response = await fetch("/api/login", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-          },
-          body: data,
-          credentials: "include",
-        });
-
-        const result = await response.json();
-        console.log("Login response:", result); // Debug log
-
-        if (result.success) {
-          console.log("Login successful");
-          document.getElementById("portfolioList").style.display = "block";
-          document.getElementById("portfolioContent").style.display = "block";
-          document.getElementById("accountSection").style.display = "block";
-          showAuthForms(false);
-          await fetchPortfolio();
-        } else {
-          console.error("Login failed:", result.message);
-          alert(result.message);
-        }
-      } catch (error) {
-        console.error("Login error:", error);
-        alert("Error during login. Please try again.");
-      }
-    });
-
-  document
-    .getElementById("registerForm")
-    .addEventListener("submit", async function (e) {
-      e.preventDefault();
-      const username = document.getElementById("registerUsername").value;
-      const password = document.getElementById("registerPassword").value;
-
-      const data = new URLSearchParams();
-      data.append("username", username);
-      data.append("password", password);
-
-      try {
-        const response = await fetch("/api/register", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-          },
-          body: data,
-        });
-        const result = await response.text();
-        if (response.status === 200) {
-          alert("Registration successful");
-        } else {
-          alert(result);
-        }
-      } catch (error) {
-        console.error("Errore:", error);
-      }
-    });
+  // Rimosso: gestione della registrazione (spostata in registration.html)
+  // document.getElementById("registerForm").addEventListener("submit", async function (e) { ... });
 
   // Function to fetch and display the portfolio
   let pieChart; // Variabile globale per il grafico a torta
@@ -254,7 +203,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
   async function fetchPortfolio() {
     try {
-      const response = await fetch("/api/portfolio", {
+      console.log("Fetching portfolio...");
+      const response = await fetch("/portfolio", {
         method: "GET",
         credentials: "include", // Important for sending cookies
         headers: {
@@ -262,30 +212,50 @@ document.addEventListener("DOMContentLoaded", function () {
         },
       });
 
+      console.log("Portfolio response status:", response.status);
+
       if (!response.ok) {
         if (response.status === 401) {
+          console.log("User not authenticated, showing login form");
           showAuthForms(true);
           return;
         }
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      const data = await response.json();
+      const text = await response.text();
+      console.log("Raw portfolio response:", text);
+
+      const data = JSON.parse(text);
+      console.log("Parsed portfolio data:", data);
+
       if (data.error) {
         throw new Error(data.error);
       }
 
-      displayPortfolio(data.stocks);
-      updateSummary(data.stocks);
-      updatePieChart(data.stocks);
-      await fetchTransactionHistory();
+      document.getElementById("portfolioContent").style.display = "block";
+
+      if (data.stocks && Array.isArray(data.stocks)) {
+        displayPortfolio(data.stocks);
+        updateSummary(data.stocks);
+        updatePieChart(data.stocks);
+      } else {
+        console.warn("No stocks data found in response");
+        document.getElementById("portfolioList").innerHTML =
+          "<p>No stocks in portfolio</p>";
+      }
+
+      if (data.transactions && Array.isArray(data.transactions)) {
+        displayTransactionHistory(data.transactions);
+      }
     } catch (error) {
       console.error("Portfolio fetch error:", error);
-      if (error.message.includes("401")) {
-        showAuthForms(true);
-      } else {
-        alert(`Error loading portfolio: ${error.message}`);
-      }
+      document.getElementById("portfolioContent").innerHTML = `
+            <div class="alert alert-danger">
+                Error loading portfolio: ${error.message}
+                <button onclick="fetchPortfolio()" class="btn btn-link">Retry</button>
+            </div>
+        `;
     }
   }
 
@@ -417,41 +387,18 @@ document.addEventListener("DOMContentLoaded", function () {
     const newIsBond = confirm("È un Bond? Premi OK per Sì, Annulla per No.");
 
     if (newQuantity !== null && newPurchasePrice !== null) {
-      fetch("/api/modifyStock", {
+      fetch("/portfolio", {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
         },
         body: new URLSearchParams({
+          action: "modify",
           ticker: stock.ticker,
           quantity: newQuantity,
           purchasePrice: newPurchasePrice,
-          isBond: newIsBond ? "on" : "off",
+          isBond: newIsBond,
         }),
-      })
-        .then((response) => response.text())
-        .then((result) => {
-          console.log(result);
-          fetchPortfolio();
-        })
-        .catch((error) => {
-          console.error("Errore:", error);
-        });
-    }
-  }
-
-  function deleteStock(ticker) {
-    if (confirm("Sei sicuro di voler cancellare " + ticker + "?")) {
-      const data = new URLSearchParams();
-      data.append("action", "remove");
-      data.append("ticker", ticker);
-
-      fetch("/api/portfolio", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: data,
         credentials: "include",
       })
         .then((response) => response.json())
@@ -459,12 +406,40 @@ document.addEventListener("DOMContentLoaded", function () {
           if (result.success) {
             fetchPortfolio();
           } else {
-            alert(result.message || "Error removing stock");
+            throw new Error(result.message || "Failed to modify stock");
+          }
+        })
+        .catch((error) => {
+          console.error("Errore:", error);
+          alert("Error modifying stock: " + error.message);
+        });
+    }
+  }
+
+  function deleteStock(ticker) {
+    if (confirm("Sei sicuro di voler cancellare " + ticker + "?")) {
+      fetch("/portfolio", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: new URLSearchParams({
+          action: "remove",
+          ticker: ticker,
+        }),
+        credentials: "include",
+      })
+        .then((response) => response.json())
+        .then((result) => {
+          if (result.success) {
+            fetchPortfolio();
+          } else {
+            throw new Error(result.message || "Failed to delete stock");
           }
         })
         .catch((error) => {
           console.error("Error:", error);
-          alert("Error removing stock");
+          alert("Error deleting stock: " + error.message);
         });
     }
   }
@@ -537,12 +512,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  function showAuthForms(show) {
-    document.getElementById("authContainer").style.display = show
-      ? "block"
-      : "none";
-  }
-
   function logoutUser() {
     // Semplice logout lato client
     showAuthForms(true);
@@ -556,34 +525,21 @@ document.addEventListener("DOMContentLoaded", function () {
     .getElementById("logoutButton")
     .addEventListener("click", async function () {
       try {
-        const response = await fetch("api/logout", {
-          method: "GET", // Cambiato da POST a GET
-          credentials: "same-origin",
+        const response = await fetch("/logout", {
+          method: "POST",
+          credentials: "include",
         });
-
-        console.log("Logout response status:", response.status); // Debug log
-
-        // Gestisci il logout indipendentemente dalla risposta
-        showAuthForms(true);
-        document.getElementById("portfolioContent").style.display = "none";
-        document.getElementById("accountSection").style.display = "none";
-        document.getElementById("loginUsername").value = "";
-        document.getElementById("loginPassword").value = "";
-
-        const text = await response.text();
-        console.log("Logout response:", text); // Debug log
-
-        if (response.ok) {
-          console.log("Logout effettuato con successo");
+        const result = await response.json();
+        if (result.success) {
+          showAuthForms(true);
+          document.getElementById("portfolioContent").style.display = "none";
+          document.getElementById("accountSection").style.display = "none";
         } else {
-          console.warn("Logout completato con warning:", text);
+          alert("Logout error: " + result.message);
         }
       } catch (error) {
-        console.error("Errore durante il logout:", error);
-        // Esegui comunque il logout lato client
-        showAuthForms(true);
-        document.getElementById("portfolioContent").style.display = "none";
-        document.getElementById("accountSection").style.display = "none";
+        console.error("Logout error:", error);
+        alert("Logout error");
       }
     });
 

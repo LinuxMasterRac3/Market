@@ -28,7 +28,9 @@ Certo! Ecco una descrizione di ciò che fa ogni file nel tuo progetto:
 
 ### **ClientHandler.java**
 
-- **Descrizione**: Gestisce le richieste HTTP dei client. Questa classe analizza le richieste in entrata, sia GET che POST, e risponde di conseguenza. Serve file statici come `index.html` e `app.js`, e gestisce le chiamate API come l'aggiunta o la rimozione di azioni e l'aggiornamento dei prezzi nel portafoglio. Utilizza il `PortfolioManager` per eseguire operazioni sul portafoglio e invia risposte HTTP appropriate al client.
+- **Descrizione**: Gestisce le richieste
+ HTTP dei client. Questa classe analizza le richieste in entrata, sia GET che POST, e risponde di conseguenza. Serve file statici come `portfolio.html
+ ` e `app.js`, e gestisce le chiamate API come l'aggiunta o la rimozione di azioni e l'aggiornamento dei prezzi nel portafoglio. Utilizza il `PortfolioManager` per eseguire operazioni sul portafoglio e invia risposte HTTP appropriate al client.
 
 ---
 
@@ -50,8 +52,7 @@ Certo! Ecco una descrizione di ciò che fa ogni file nel tuo progetto:
 
 ---
 
-### **index.html**
-
+portfolio.html
 - **Descrizione**: La pagina HTML principale che funge da interfaccia utente per l'applicazione web. Contiene form per aggiungere e rimuovere azioni dal portafoglio, un pulsante per aggiornare i prezzi e una sezione per visualizzare il portafoglio attuale. Include campi di input per il ticker, la quantità, il prezzo di acquisto e un'opzione per indicare se il titolo è un'obbligazione. Il file include anche il riferimento a `app.js` per aggiungere funzionalità interattive alla pagina.
 
 ---
@@ -67,7 +68,6 @@ Questi file lavorano insieme per creare un'applicazione web che permette all'ute
 ---
 
 **Note**:
-
 - **API Key**: Assicurati di avere sostituito `"YOUR_ALPHA_VANTAGE_API_KEY"` con la tua effettiva API key nel file `YahooFinanceAPI.java`.
 - **Percorsi dei File**: Verifica che tutti i percorsi dei file siano corretti e che i file siano posizionati nelle directory appropriate.
 - **Debugging**: Utilizza i messaggi di log presenti nel codice per aiutarti a individuare eventuali problemi durante l'esecuzione dell'applicazione.
