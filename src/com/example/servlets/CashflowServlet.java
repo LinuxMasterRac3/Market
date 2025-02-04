@@ -1,18 +1,31 @@
 package com.example.servlets;
 
 import com.example.UserManager;
+import com.example.DatabaseManager;
+import com.example.CashflowTransaction;
+import com.example.SessionManager;
+
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.JsonNode;
 
 public class CashflowServlet extends HttpServlet {
     private UserManager userManager;
+    private final DatabaseManager dbManager;
     private final ObjectMapper mapper = new ObjectMapper();
+
+    public CashflowServlet() throws SQLException {
+        this.dbManager = new DatabaseManager();
+    }
 
     public void setUserManager(UserManager userManager) {
         this.userManager = userManager;
@@ -45,32 +58,52 @@ public class CashflowServlet extends HttpServlet {
 
     private void getSummary(HttpServletRequest request, HttpServletResponse response) 
             throws IOException {
-        ObjectNode json = mapper.createObjectNode();
-        // Per ora restituiamo dati di esempio
-        json.put("cashBalance", 1000.00);
-        json.put("investedCapital", 5000.00);
-        json.put("totalCapital", 6000.00);
-        json.put("lastUpdate", System.currentTimeMillis());
+        try {
+            String username = SessionManager.getUserFromSession(request);
+            if (username == null) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                return;
+            }
 
-        response.setContentType("application/json");
-        response.getWriter().write(json.toString());
+            ObjectNode json = mapper.createObjectNode();
+            double cashBalance = dbManager.getCashBalance(username);
+            double investedCapital = 0.0; // TODO: Implement this
+            
+            json.put("cashBalance", cashBalance);
+            json.put("investedCapital", investedCapital);
+            json.put("totalCapital", cashBalance + investedCapital);
+            json.put("lastUpdate", System.currentTimeMillis());
+
+            response.setContentType("application/json");
+            response.getWriter().write(json.toString());
+        } catch (SQLException e) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.getWriter().write("{\"error\":\"Database error\"}");
+        }
     }
 
     private void getTransactions(HttpServletRequest request, HttpServletResponse response) 
             throws IOException {
-        ObjectNode json = mapper.createObjectNode();
-        ArrayNode transactions = json.putArray("transactions");
-        
-        // Per ora restituiamo dati di esempio
-        ObjectNode transaction = mapper.createObjectNode();
-        transaction.put("date", System.currentTimeMillis());
-        transaction.put("type", "INCOME");
-        transaction.put("amount", 1000.00);
-        transaction.put("description", "Stipendio");
-        transactions.add(transaction);
+        try {
+            String username = SessionManager.getUserFromSession(request);
+            if (username == null) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                return;
+            }
 
-        response.setContentType("application/json");
-        response.getWriter().write(json.toString());
+            List<CashflowTransaction> transactions = dbManager.getCashflowTransactions(username);
+            ObjectNode json = mapper.createObjectNode();
+            ArrayNode txArray = json.putArray("transactions");
+            for (CashflowTransaction tx : transactions) {
+                txArray.add(tx.toJsonNode());
+            }
+
+            response.setContentType("application/json");
+            response.getWriter().write(json.toString());
+        } catch (SQLException e) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.getWriter().write("{\"error\":\"Database error\"}");
+        }
     }
 
     @Override
@@ -92,12 +125,27 @@ public class CashflowServlet extends HttpServlet {
 
     private void addTransaction(HttpServletRequest request, HttpServletResponse response) 
             throws IOException {
-        ObjectNode json = mapper.createObjectNode();
-        // Per ora solo simuliamo l'aggiunta
-        json.put("success", true);
-        json.put("message", "Transaction added successfully");
+        try {
+            String username = SessionManager.getUserFromSession(request);
+            if (username == null) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                return;
+            }
 
-        response.setContentType("application/json");
-        response.getWriter().write(json.toString());
+            JsonNode body = mapper.readTree(request.getReader());
+            CashflowTransaction tx = new CashflowTransaction(
+                body.get("type").asText(),
+                body.get("amount").asDouble(),
+                body.get("description").asText()
+            );
+
+            dbManager.addCashflowTransaction(username, tx);
+
+            response.setContentType("application/json");
+            response.getWriter().write("{\"success\":true}");
+        } catch (SQLException e) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.getWriter().write("{\"error\":\"Database error\"}");
+        }
     }
 }

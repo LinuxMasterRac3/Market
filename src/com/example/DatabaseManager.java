@@ -113,9 +113,21 @@ public class DatabaseManager implements AutoCloseable {
             "timestamp TIMESTAMPTZ DEFAULT NOW()" +
             ")");
 
+        // Add cashflow transactions table
+        stmt.executeUpdate(
+            "CREATE TABLE IF NOT EXISTS cashflow_transactions (" +
+            "id UUID DEFAULT uuid_generate_v4() PRIMARY KEY," +
+            "username VARCHAR(50) REFERENCES users(username)," +
+            "type VARCHAR(10) NOT NULL," +
+            "amount DECIMAL(10,2) NOT NULL," +
+            "description TEXT," +
+            "date TIMESTAMPTZ DEFAULT NOW()" +
+            ")");
+
         // Create indexes for better performance
         stmt.executeUpdate("CREATE INDEX IF NOT EXISTS idx_stocks_username ON stocks(username)");
         stmt.executeUpdate("CREATE INDEX IF NOT EXISTS idx_transactions_username ON transactions(username)");
+        stmt.executeUpdate("CREATE INDEX IF NOT EXISTS idx_cashflow_username ON cashflow_transactions(username)");
     }
 
     // Metodi per gli utenti
@@ -240,6 +252,48 @@ public class DatabaseManager implements AutoCloseable {
             }
         }
         return transactions;
+    }
+
+    // Add new methods for cashflow
+    public void addCashflowTransaction(String username, CashflowTransaction tx) throws SQLException {
+        String query = "INSERT INTO cashflow_transactions (username, type, amount, description) VALUES (?, ?, ?, ?)";
+        try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+            pstmt.setString(1, username);
+            pstmt.setString(2, tx.getType());
+            pstmt.setDouble(3, tx.getAmount());
+            pstmt.setString(4, tx.getDescription());
+            pstmt.executeUpdate();
+        }
+    }
+
+    public List<CashflowTransaction> getCashflowTransactions(String username) throws SQLException {
+        List<CashflowTransaction> transactions = new ArrayList<>();
+        String query = "SELECT * FROM cashflow_transactions WHERE username = ? ORDER BY date DESC";
+        try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+            pstmt.setString(1, username);
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                transactions.add(new CashflowTransaction(
+                    rs.getString("type"),
+                    rs.getDouble("amount"),
+                    rs.getString("description")
+                ));
+            }
+        }
+        return transactions;
+    }
+
+    public double getCashBalance(String username) throws SQLException {
+        String query = "SELECT COALESCE(SUM(CASE WHEN type = 'INCOME' THEN amount ELSE -amount END), 0) as balance " +
+                      "FROM cashflow_transactions WHERE username = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+            pstmt.setString(1, username);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getDouble("balance");
+            }
+            return 0.0;
+        }
     }
 
     public void reconnect() throws SQLException {

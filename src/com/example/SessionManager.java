@@ -7,7 +7,14 @@ import javax.servlet.http.HttpSession;
 public class SessionManager {
     public static String getUserFromSession(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
-        return session != null ? (String) session.getAttribute("username") : null;
+        if (session != null) {
+            return (String) session.getAttribute("username");
+        }
+        return null;
+    }
+
+    public static boolean isAuthenticated(HttpServletRequest request) {
+        return getUserFromSession(request) != null;
     }
 
     public static void createSession(HttpServletRequest request, String username) {
@@ -21,9 +28,16 @@ public class SessionManager {
         if (session != null) {
             session.invalidate();
         }
-    }
-
-    public static boolean isValidSession(HttpServletRequest request) {
-        return getUserFromSession(request) != null;
+        // Clear any session cookies
+        javax.servlet.http.Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (javax.servlet.http.Cookie cookie : cookies) {
+                if (cookie.getName().equals("JSESSIONID")) {
+                    cookie.setValue("");
+                    cookie.setMaxAge(0);
+                    response.addCookie(cookie);
+                }
+            }
+        }
     }
 }
