@@ -38,30 +38,27 @@ public class PortfolioServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        System.out.println("Portfolio GET request received");
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
         response.setHeader("Access-Control-Allow-Credentials", "true");
 
         String username = SessionManager.getUserFromSession(request);
-        System.out.println("Username from session: " + username);
-
+        
         if (username == null) {
-            System.err.println("No user session found");
+            // Instead of redirecting, just send a status code
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("{\"error\":\"Not logged in\"}");
+            response.getWriter().write("{\"authenticated\":false}");
             return;
         }
 
         try {
             Portfolio portfolio = portfolioManager.getPortfolio(username);
-            String portfolioJson = portfolio != null ? portfolio.toJsonString() : "{\"stocks\":[],\"transactions\":[]}";
-            System.out.println("Sending portfolio JSON: " + portfolioJson);
+            String portfolioJson = portfolio != null ? 
+                portfolio.toJsonString() : 
+                "{\"authenticated\":true,\"stocks\":[],\"transactions\":[]}";
             response.getWriter().write(portfolioJson);
         } catch (Exception e) {
-            System.err.println("Error retrieving portfolio: " + e.getMessage());
-            e.printStackTrace();
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.getWriter().write("{\"error\":\"" + e.getMessage() + "\"}");
         }

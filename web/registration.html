@@ -74,8 +74,14 @@
             // Hide auth container initially
             document.getElementById("authContainer").style.display = "none";
 
+            async function delay(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+            }
+
             async function checkSession() {
                 try {
+                    await delay(500); // Aggiungi un delay di 500ms
+
                     const response = await fetch("/checkSession", {
                         method: "GET",
                         credentials: "include"
@@ -89,17 +95,19 @@
                     console.log("Session check response:", data);
 
                     if (data.authenticated) {
-                        console.log("User is already authenticated, redirecting...");
-                        window.location.replace("/portfolio.html");
-                        return;
+                        const urlParams = new URLSearchParams(window.location.search);
+                        const destination = urlParams.get('redirect') || '/portfolio.html';
+
+                        if (destination !== window.location.pathname) {
+                            window.location.replace(destination);
+                            return;
+                        }
                     }
 
-                    // Show login form if not authenticated
-                    console.log("User not authenticated, showing login form");
+                    // Mostra il form di login solo se non siamo autenticati
                     document.getElementById("authContainer").style.display = "block";
                 } catch (error) {
                     console.error("Session check error:", error);
-                    // Show login form on error
                     document.getElementById("authContainer").style.display = "block";
                 }
             }
@@ -125,14 +133,12 @@
                         credentials: "include"
                     });
 
-                    const text = await response.text();
-                    console.log("Login response:", text);
-
-                    const result = JSON.parse(text);
+                    const result = await response.json();
                     if (result.success) {
-                        console.log("Login successful, redirecting to portfolio");
-                        // Use absolute path and replace
-                        window.location.replace("/portfolio.html");
+                        // Get the redirect URL from query parameters or default to portfolio.html
+                        const urlParams = new URLSearchParams(window.location.search);
+                        const redirectUrl = urlParams.get('redirect') || '/portfolio.html';
+                        window.location.href = redirectUrl;
                     } else {
                         alert(result.message || "Login failed");
                     }

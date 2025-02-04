@@ -103,13 +103,8 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
 
-  // Rimosso: gestione della registrazione (spostata in registration.html)
-  // document.getElementById("registerForm").addEventListener("submit", async function (e) { ... });
-
-  // Function to fetch and display the portfolio
   let pieChart; // Variabile globale per il grafico a torta
 
-  // Funzione per recuperare e mostrare lo storico delle transazioni
   async function fetchTransactionHistory() {
     try {
       const response = await fetch("/api/portfolio", {

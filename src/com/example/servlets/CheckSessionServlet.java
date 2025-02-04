@@ -16,17 +16,26 @@ public class CheckSessionServlet extends HttpServlet {
         response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
         response.setHeader("Access-Control-Allow-Credentials", "true");
 
+        HttpSession session = request.getSession(false);
         String username = SessionManager.getUserFromSession(request);
-        System.out.println("Checking session for: " + username);
+        String currentPage = request.getHeader("Referer");
+        
+        System.out.println("Session check for user: " + username + " from page: " + currentPage);
 
-        String jsonResponse = String.format(
-            "{\"authenticated\": %b, \"username\": \"%s\"}",
-            username != null,
-            username != null ? username : ""
-        );
-
-        System.out.println("Session check response: " + jsonResponse);
-        response.getWriter().write(jsonResponse);
+        if (username != null && session != null) {
+            // Valid session exists
+            response.getWriter().write(String.format(
+                "{\"authenticated\": true, \"username\": \"%s\", \"currentPage\": \"%s\"}",
+                username,
+                currentPage != null ? currentPage : ""
+            ));
+            System.out.println("Valid session found for: " + username);
+        } else {
+            // No valid session
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("{\"authenticated\": false}");
+            System.out.println("No valid session found");
+        }
     }
 
     @Override

@@ -92,6 +92,12 @@ public class WebServer {
             LogoutServlet logoutServlet = new LogoutServlet();
             servletHandler.addServlet(new ServletHolder(logoutServlet), "/logout");
             
+            // Aggiungi CashflowServlet
+            CashflowServlet cashflowServlet = new CashflowServlet();
+            cashflowServlet.setUserManager(userManager);
+            ServletHolder cashflowHolder = new ServletHolder(cashflowServlet);
+            servletHandler.addServlet(cashflowHolder, "/cashflow/*");
+            
             // Configure handler order - static files first, then servlets
             HandlerList handlers = new HandlerList();
             handlers.setHandlers(new Handler[]{resourceHandler, servletHandler});
