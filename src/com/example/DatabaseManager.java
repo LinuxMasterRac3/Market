@@ -128,6 +128,14 @@ public class DatabaseManager implements AutoCloseable {
         stmt.executeUpdate("CREATE INDEX IF NOT EXISTS idx_stocks_username ON stocks(username)");
         stmt.executeUpdate("CREATE INDEX IF NOT EXISTS idx_transactions_username ON transactions(username)");
         stmt.executeUpdate("CREATE INDEX IF NOT EXISTS idx_cashflow_username ON cashflow_transactions(username)");
+
+        // Add patrimonio_investito view
+        stmt.executeUpdate(
+            "CREATE OR REPLACE VIEW patrimonio_investito AS " +
+            "SELECT username, SUM(quantity * current_price) as total_value " +
+            "FROM stocks " +
+            "GROUP BY username"
+        );
     }
 
     // Metodi per gli utenti
@@ -291,6 +299,19 @@ public class DatabaseManager implements AutoCloseable {
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
                 return rs.getDouble("balance");
+            }
+            return 0.0;
+        }
+    }
+
+    // Add new method to get invested capital
+    public double getInvestedCapital(String username) throws SQLException {
+        String query = "SELECT total_value FROM patrimonio_investito WHERE username = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+            pstmt.setString(1, username);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getDouble("total_value");
             }
             return 0.0;
         }

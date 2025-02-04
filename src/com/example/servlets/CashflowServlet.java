@@ -67,7 +67,7 @@ public class CashflowServlet extends HttpServlet {
 
             ObjectNode json = mapper.createObjectNode();
             double cashBalance = dbManager.getCashBalance(username);
-            double investedCapital = 0.0; // TODO: Implement this
+            double investedCapital = dbManager.getInvestedCapital(username);
             
             json.put("cashBalance", cashBalance);
             json.put("investedCapital", investedCapital);

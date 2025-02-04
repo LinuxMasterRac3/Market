@@ -10,22 +10,33 @@ async function loadFinancialData() {
     }
 
     const data = await response.json();
-    document.getElementById(
-      "cashBalance"
-    ).textContent = `€${data.cashBalance.toFixed(2)}`;
-    document.getElementById(
-      "investedCapital"
-    ).textContent = `€${data.investedCapital.toFixed(2)}`;
-    document.getElementById(
-      "totalCapital"
-    ).textContent = `€${data.totalCapital.toFixed(2)}`;
+
+    // Format numbers with 2 decimal places and thousands separator
+    const formatCurrency = (value) =>
+      new Intl.NumberFormat("it-IT", {
+        style: "currency",
+        currency: "EUR",
+      }).format(value);
+
+    document.getElementById("cashBalance").textContent = formatCurrency(
+      data.cashBalance
+    );
+    document.getElementById("investedCapital").textContent = formatCurrency(
+      data.investedCapital
+    );
+    document.getElementById("totalCapital").textContent = formatCurrency(
+      data.totalCapital
+    );
     document.getElementById(
       "lastUpdate"
     ).textContent = `Ultimo aggiornamento: ${new Date(
       data.lastUpdate
-    ).toLocaleString()}`;
+    ).toLocaleString("it-IT")}`;
   } catch (error) {
     console.error("Error loading financial data:", error);
+    document.getElementById("cashBalance").textContent = "Errore";
+    document.getElementById("investedCapital").textContent = "Errore";
+    document.getElementById("totalCapital").textContent = "Errore";
   }
 }
 
