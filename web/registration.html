@@ -10,6 +10,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Inclusione Chart.js -->
     <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Text&display=swap" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="registration.js"></script>
 </head>
 
 <body>
@@ -69,128 +70,6 @@
                 </div>
             </div>
         </div>
-
-        <script>
-            // Hide auth container initially
-            document.getElementById("authContainer").style.display = "none";
-
-            async function delay(ms) {
-                return new Promise(resolve => setTimeout(resolve, ms));
-            }
-
-            async function checkSession() {
-                try {
-                    await delay(500); // Aggiungi un delay di 500ms
-
-                    const response = await fetch("/checkSession", {
-                        method: "GET",
-                        credentials: "include"
-                    });
-
-                    if (!response.ok) {
-                        throw new Error('Session check failed');
-                    }
-
-                    const data = await response.json();
-                    console.log("Session check response:", data);
-
-                    if (data.authenticated) {
-                        const urlParams = new URLSearchParams(window.location.search);
-                        const destination = urlParams.get('redirect') || '/portfolio.html';
-
-                        if (destination !== window.location.pathname) {
-                            window.location.replace(destination);
-                            return;
-                        }
-                    }
-
-                    // Mostra il form di login solo se non siamo autenticati
-                    document.getElementById("authContainer").style.display = "block";
-                } catch (error) {
-                    console.error("Session check error:", error);
-                    document.getElementById("authContainer").style.display = "block";
-                }
-            }
-
-            // Check session on page load
-            window.addEventListener('DOMContentLoaded', checkSession);
-
-            // Handle login form submission
-            document.getElementById("loginForm").addEventListener("submit", async function (e) {
-                e.preventDefault();
-                const username = document.getElementById("loginUsername").value;
-                const password = document.getElementById("loginPassword").value;
-
-                console.log("Attempting login for:", username);
-                try {
-                    const response = await fetch("/login", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/x-www-form-urlencoded",
-                            "Accept": "application/json"
-                        },
-                        body: new URLSearchParams({ username, password }).toString(),
-                        credentials: "include"
-                    });
-
-                    const result = await response.json();
-                    if (result.success) {
-                        // Get the redirect URL from query parameters or default to portfolio.html
-                        const urlParams = new URLSearchParams(window.location.search);
-                        const redirectUrl = urlParams.get('redirect') || '/portfolio.html';
-                        window.location.href = redirectUrl;
-                    } else {
-                        alert(result.message || "Login failed");
-                    }
-                } catch (error) {
-                    console.error("Login error:", error);
-                    alert("Login failed: " + error.message);
-                }
-            });
-
-            // Handle registration form submission
-            document.getElementById("registerForm").addEventListener("submit", async function (e) {
-                e.preventDefault();
-                const username = document.getElementById("registerUsername").value;
-                const password = document.getElementById("registerPassword").value;
-
-                console.log("Attempting registration for:", username);
-                try {
-                    const response = await fetch("/register", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/x-www-form-urlencoded",
-                            "Accept": "application/json"
-                        },
-                        body: new URLSearchParams({
-                            username: username,
-                            password: password
-                        }),
-                        credentials: "include"
-                    });
-
-                    console.log("Registration response status:", response.status);
-                    const text = await response.text();
-                    console.log("Raw response:", text);
-
-                    try {
-                        const result = JSON.parse(text);
-                        if (result.success) {
-                            alert("Registration successful!");
-                            document.getElementById("registerForm").reset();
-                        } else {
-                            alert(result.message || "Registration failed");
-                        }
-                    } catch (parseError) {
-                        console.error("Parse error:", parseError);
-                        alert("Server response error: " + text);
-                    }
-                } catch (error) {
-                    console.error("Registration error:", error);
-                    alert("Registration failed: " + error.message);
-                }
-            });
-        </script>
 </body>
 
 </html>

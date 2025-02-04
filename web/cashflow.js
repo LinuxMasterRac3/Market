@@ -146,40 +146,90 @@ function updateMonthlyChart(transactions) {
   });
 }
 
-// Inizializza la pagina quando il documento è caricato
-document.addEventListener("DOMContentLoaded", () => {
+async function checkAuthentication() {
+  try {
+    const response = await fetch("/checkSession", {
+      method: "GET",
+      credentials: "include",
+    });
+    // Instead of throwing error, check if unauthorized
+    if (response.status === 401) {
+      return false;
+    }
+    // Assume 200 OK
+    const data = await response.json();
+    console.log("Auth check response:", data);
+    return Boolean(data.authenticated);
+  } catch (error) {
+    console.error("Auth check error:", error);
+    return false;
+  }
+}
+
+async function initializePage() {
+  const isAuthenticated = await checkAuthentication();
+  if (!isAuthenticated) {
+    window.location.replace("/registration.html");
+    return;
+  }
+  document.getElementById("mainContent").style.display = "block";
+  await loadFinancialData();
+  await loadTransactionHistory();
+}
+
+// Document ready handler
+document.addEventListener("DOMContentLoaded", async () => {
+  await initializePage();
+  setupEventListeners();
+});
+
+function setupEventListeners() {
+  // Theme handling
+  const themeToggleButton = document.getElementById("themeToggleButton");
+  if (localStorage.getItem("theme") === "dark") {
+    document.body.classList.add("dark-mode");
+    themeToggleButton.textContent = "Light Mode";
+  }
+
+  themeToggleButton.addEventListener("click", function () {
+    document.body.classList.toggle("dark-mode");
+    const isDark = document.body.classList.contains("dark-mode");
+    localStorage.setItem("theme", isDark ? "dark" : "light");
+    themeToggleButton.textContent = isDark ? "Light Mode" : "Dark Mode";
+  });
+
+  // Transaction form handling
   document
     .getElementById("addTransactionForm")
-    .addEventListener("submit", async (e) => {
-      e.preventDefault();
+    .addEventListener("submit", handleTransactionSubmit);
+}
 
-      try {
-        const response = await fetch("/cashflow/add", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            type: document.getElementById("transactionType").value,
-            amount: parseFloat(document.getElementById("amount").value),
-            description: document.getElementById("description").value,
-          }),
-          credentials: "include",
-        });
+async function handleTransactionSubmit(e) {
+  e.preventDefault();
 
-        if (!response.ok) {
-          throw new Error("Failed to add transaction");
-        }
-
-        // Ricarica i dati dopo l'aggiunta
-        await loadFinancialData();
-        await loadTransactionHistory();
-
-        // Reset form
-        e.target.reset();
-      } catch (error) {
-        console.error("Error adding transaction:", error);
-        alert("Errore nell'aggiunta della transazione");
-      }
+  try {
+    const response = await fetch("/cashflow/add", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        type: document.getElementById("transactionType").value,
+        amount: parseFloat(document.getElementById("amount").value),
+        description: document.getElementById("description").value,
+      }),
+      credentials: "include",
     });
-});
+
+    if (!response.ok) {
+      throw new Error("Failed to add transaction");
+    }
+
+    await loadFinancialData();
+    await loadTransactionHistory();
+    e.target.reset();
+  } catch (error) {
+    console.error("Error adding transaction:", error);
+    alert("Errore nell'aggiunta della transazione");
+  }
+}

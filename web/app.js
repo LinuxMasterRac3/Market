@@ -537,35 +537,22 @@ document.addEventListener("DOMContentLoaded", function () {
         alert("Logout error");
       }
     });
-
-  /* Theme Switcher */
-  const themeToggleButton = document.getElementById("themeToggleButton");
-
-  if (themeToggleButton) {
-    // Load theme preference from localStorage
+  document.addEventListener("DOMContentLoaded", function () {
+    // Theme handling and logout handler
+    const themeToggleButton = document.getElementById("themeToggleButton");
     if (localStorage.getItem("theme") === "dark") {
       document.body.classList.add("dark-mode");
       themeToggleButton.textContent = "Light Mode";
-      console.log("Dark mode enabled from localStorage.");
     }
-
-    // Toggle theme on button click
     themeToggleButton.addEventListener("click", function () {
       document.body.classList.toggle("dark-mode");
-      if (document.body.classList.contains("dark-mode")) {
-        themeToggleButton.textContent = "Light Mode";
-        localStorage.setItem("theme", "dark");
-        console.log("Dark mode enabled.");
-      } else {
-        themeToggleButton.textContent = "Dark Mode";
-        localStorage.setItem("theme", "light");
-        console.log("Light mode enabled.");
-      }
+      const isDark = document.body.classList.contains("dark-mode");
+      localStorage.setItem("theme", isDark ? "dark" : "light");
+      themeToggleButton.textContent = isDark ? "Light Mode" : "Dark Mode";
     });
-  } else {
-    console.warn("themeToggleButton non trovato nell'HTML.");
-  }
 
+    // Modified logout endpoint from /api/logout to /logout
+  });
   // 1. Optimize Event Listeners for Mobile
   // Use touch events if necessary
   const buttons = document.querySelectorAll(".btn, button");
