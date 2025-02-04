@@ -179,8 +179,11 @@ async function initializePage() {
 
 // Document ready handler
 document.addEventListener("DOMContentLoaded", async () => {
-  await initializePage();
-  setupEventListeners();
+  if (await SessionManager.initializePage("mainContent")) {
+    await loadFinancialData();
+    await loadTransactionHistory();
+  }
+  SessionManager.setupEventListeners();
 });
 
 function setupEventListeners() {
