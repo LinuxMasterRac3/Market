@@ -27,15 +27,24 @@ class SessionManager {
         credentials: "include",
       });
 
+      if (!response.ok) {
+        throw new Error("Logout request failed");
+      }
+
       const result = await response.json();
       if (result.success) {
+        // Clear any client-side state
+        localStorage.removeItem("user");
+        // Redirect to registration page
         window.location.href = "/registration.html";
+        return true;
       } else {
         throw new Error(result.message || "Logout failed");
       }
     } catch (error) {
       console.error("Logout error:", error);
       alert("Errore durante il logout: " + error.message);
+      return false;
     }
   }
 
