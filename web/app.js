@@ -523,20 +523,27 @@ document.addEventListener("DOMContentLoaded", function () {
         const response = await fetch("/logout", {
           method: "POST",
           credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
         });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
         const result = await response.json();
         if (result.success) {
-          showAuthForms(true);
-          document.getElementById("portfolioContent").style.display = "none";
-          document.getElementById("accountSection").style.display = "none";
+          window.location.href = "/registration.html";
         } else {
-          alert("Logout error: " + result.message);
+          throw new Error(result.message || "Logout failed");
         }
       } catch (error) {
         console.error("Logout error:", error);
-        alert("Logout error");
+        alert("Logout failed. Please try again.");
       }
     });
+
   document.addEventListener("DOMContentLoaded", function () {
     // Theme handling and logout handler
     const themeToggleButton = document.getElementById("themeToggleButton");

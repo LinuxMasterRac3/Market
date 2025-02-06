@@ -10,19 +10,23 @@ import com.example.SessionManager;
 @WebServlet("/logout")
 public class LogoutServlet extends HttpServlet {
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) 
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) 
             throws IOException {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         
-        String username = SessionManager.getUserFromSession(request);
-        if (username != null) {
+        try {
             SessionManager.invalidateSession(request, response);
-            response.setStatus(HttpServletResponse.SC_OK);
-            response.getWriter().write("{\"success\": true}");
-        } else {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("{\"success\": false, \"message\": \"Not logged in\"}");
+            response.getWriter().write("{\"success\":true}");
+        } catch (Exception e) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.getWriter().write("{\"success\":false,\"message\":\"" + e.getMessage() + "\"}");
         }
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) 
+            throws IOException {
+        doPost(request, response);
     }
 }

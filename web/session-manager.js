@@ -1,68 +1,50 @@
 class SessionManager {
-  static async checkAuthentication() {
+  static async checkSession() {
     try {
       const response = await fetch("/checkSession", {
         method: "GET",
         credentials: "include",
       });
 
+      if (!response.ok) {
+        return false;
+      }
+
       const data = await response.json();
-      return {
-        isAuthenticated: data.authenticated,
-        status: response.status,
-      };
+      return Boolean(data.authenticated);
     } catch (error) {
-      console.error("Errore nel controllo dell'autenticazione:", error);
-      return {
-        isAuthenticated: false,
-        status: 500,
-      };
+      console.error("Session check error:", error);
+      return false;
     }
   }
 
-  static async logout() {
+  static async handleLogout() {
     try {
       const response = await fetch("/logout", {
         method: "POST",
         credentials: "include",
       });
 
-      if (!response.ok) {
-        throw new Error("Logout request failed");
-      }
-
       const result = await response.json();
       if (result.success) {
-        // Clear any client-side state
-        localStorage.removeItem("user");
-        // Redirect to registration page
         window.location.href = "/registration.html";
-        return true;
       } else {
         throw new Error(result.message || "Logout failed");
       }
     } catch (error) {
       console.error("Logout error:", error);
-      alert("Errore durante il logout: " + error.message);
-      return false;
+      alert("Error during logout: " + error.message);
     }
   }
 
-  static async initializePage(
-    contentId = "mainContent",
-    redirectPath = "/registration.html"
-  ) {
-    const { isAuthenticated, status } = await this.checkAuthentication();
-
-    if (isAuthenticated) {
-      document.getElementById(contentId).style.display = "block";
-      return true;
-    } else {
-      if (status === 401) {
-        window.location.href = `${redirectPath}?redirect=${window.location.pathname}`;
-      }
+  static async initializePage(contentId) {
+    const isAuthenticated = await this.checkSession();
+    if (!isAuthenticated) {
+      window.location.replace("/registration.html");
       return false;
     }
+    document.getElementById(contentId).style.display = "block";
+    return true;
   }
 
   static setupEventListeners() {
@@ -84,7 +66,7 @@ class SessionManager {
     // Logout handling
     const logoutButton = document.getElementById("logoutButton");
     if (logoutButton) {
-      logoutButton.addEventListener("click", () => this.logout());
+      logoutButton.addEventListener("click", this.handleLogout);
     }
   }
 }
