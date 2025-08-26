@@ -662,12 +662,8 @@ body:not(.dark-mode) .table tbody td {
 @media (max-width: 480px) {
   /* Reset margins and padding for more space */
   .container {
-    margin-top: 15px;
+    margin-top: 0;
     padding: 10px;
-  }
-  
-  .navbar-brand {
-    font-size: 1rem;
   }
 
   /* Force single-column layout */
@@ -698,6 +694,17 @@ body:not(.dark-mode) .table tbody td {
   /* ...existing code... */
 }
 
+@media (max-width: 480px) {
+  .container {
+    margin-top: 15px;
+    padding: 10px;
+  }
+  .navbar-brand {
+    font-size: 1rem;
+  }
+  /* ...existing code... */
+}
+
 @media screen and (max-aspect-ratio: 9/16) {
   .container {
     margin-top: 0;
@@ -711,6 +718,24 @@ body:not(.dark-mode) .table tbody td {
     font-size: 1rem;
     padding: 12px 24px;
   }
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-size: 1.25rem;
+  }
+  /* ...existing code... */
+}
+
+@media screen and (max-aspect-ratio: 9/16) {
+  .container {
+    margin-top: 0;
+    padding: 10px;
+  }
+  .row {
+    flex-direction: column !important;
+  }
+  .btn,
   h1,
   h2,
   h3,
@@ -783,24 +808,10 @@ body:not(.dark-mode) .table tbody td {
     display: block;
   }
 
-  /* Adjust navbar to stack items vertically and occupy full width */
-  .navbar-nav {
-    flex-direction: column !important;
-    width: 100%;
-  }
-
-  .navbar-nav .nav-link {
-    display: block;
-    width: 100%;
-    text-align: center;
-    font-size: 1rem; /* Maintain consistent font size */
-    padding: 10px 0; /* Adjust padding for better spacing */
-  }
-
   /* ...existing code... */
 }
 
-/* 24. Desktop Layout (992px+) */
+/* 24. Restore Two-Column Layout for Desktop */
 @media (min-width: 992px) {
   .container {
     display: flex;
@@ -830,7 +841,25 @@ body:not(.dark-mode) .table tbody td {
     overflow-y: visible;
   }
 
-  /* Login Form Layout */
+  /* ...existing code... */
+}
+
+/* 25. Maintain Single-Column Layout for Mobile */
+@media (max-width: 991px) {
+  .container {
+    flex-direction: column;
+  }
+
+  .col-md-6 {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+
+  /* ...existing mobile styles... */
+}
+
+/* 26. Optimize Login Form Layout */
+@media (min-width: 992px) {
   #authContainer .row {
     display: flex;
     flex-direction: row;
@@ -846,7 +875,17 @@ body:not(.dark-mode) .table tbody td {
     margin: 0 auto;
   }
 
-  /* Portfolio Content Layout */
+  /* ...existing code... */
+}
+
+/* 27. Prevent Potential Conflicts */
+#authContainer .form {
+  /* Ensure forms take full height within their columns if needed */
+  height: 100%;
+}
+
+/* 28. Enhance Portfolio Content Layout */
+@media (min-width: 992px) {
   #portfolioContent .row {
     display: flex;
     flex-direction: row;
@@ -856,27 +895,9 @@ body:not(.dark-mode) .table tbody td {
   #portfolioContent .col-md-6 {
     max-width: 48%;
   }
-
-  /* Button Spacing and Sizing */
-  .btn {
-    padding: 12px 24px;
-    font-size: 1rem;
-  }
-
-  /* ...existing code... */
 }
 
-/* 25. Maintain Single-Column Layout for Mobile */
 @media (max-width: 991px) {
-  .container {
-    flex-direction: column;
-  }
-
-  .col-md-6 {
-    flex: 0 0 100%;
-    max-width: 100%;
-  }
-
   #portfolioContent .row {
     flex-direction: column;
   }
@@ -884,35 +905,7 @@ body:not(.dark-mode) .table tbody td {
   #portfolioContent .col-md-6 {
     max-width: 100%;
   }
-
-  .btn {
-    padding: 10px 20px;
-    font-size: 0.9rem;
-  }
-
-  /* ...existing mobile styles... */
 }
-
-/* Additional form styling */
-#authContainer .form {
-  /* Ensure forms take full height within their columns if needed */
-  height: 100%;
-}
-
-#portfolioContent {
-  /* ...existing code... */
-  padding-left: 20px;
-  padding-right: 20px;
-  /* ...existing code... */
-}
-
-
-#authContainer .form {
-  /* Ensure forms take full height within their columns if needed */
-  height: 100%;
-}
-
-
 
 #portfolioContent {
   /* ...existing code... */
@@ -960,4 +953,20 @@ body:not(.dark-mode) .table tbody td {
   }
 }
 
+@media (max-aspect-ratio: 9/16) {
+  /* Adjust navbar to stack items vertically and occupy full width */
+  .navbar-nav {
+    flex-direction: column !important;
+    width: 100%;
+  }
 
+  .navbar-nav .nav-link {
+    display: block;
+    width: 100%;
+    text-align: center;
+    font-size: 1rem; /* Maintain consistent font size */
+    padding: 10px 0; /* Adjust padding for better spacing */
+  }
+
+  /* ...existing mobile styles... */
+}
