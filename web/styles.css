@@ -800,7 +800,7 @@ body:not(.dark-mode) .table tbody td {
   /* ...existing code... */
 }
 
-/* 24. Restore Two-Column Layout for Desktop */
+/* 24. Desktop Layout (992px+) */
 @media (min-width: 992px) {
   .container {
     display: flex;
@@ -830,25 +830,7 @@ body:not(.dark-mode) .table tbody td {
     overflow-y: visible;
   }
 
-  /* ...existing code... */
-}
-
-/* 25. Maintain Single-Column Layout for Mobile */
-@media (max-width: 991px) {
-  .container {
-    flex-direction: column;
-  }
-
-  .col-md-6 {
-    flex: 0 0 100%;
-    max-width: 100%;
-  }
-
-  /* ...existing mobile styles... */
-}
-
-/* 26. Optimize Login Form Layout */
-@media (min-width: 992px) {
+  /* Login Form Layout */
   #authContainer .row {
     display: flex;
     flex-direction: row;
@@ -864,17 +846,7 @@ body:not(.dark-mode) .table tbody td {
     margin: 0 auto;
   }
 
-  /* ...existing code... */
-}
-
-/* 27. Prevent Potential Conflicts */
-#authContainer .form {
-  /* Ensure forms take full height within their columns if needed */
-  height: 100%;
-}
-
-/* 28. Enhance Portfolio Content Layout */
-@media (min-width: 992px) {
+  /* Portfolio Content Layout */
   #portfolioContent .row {
     display: flex;
     flex-direction: row;
@@ -884,9 +856,27 @@ body:not(.dark-mode) .table tbody td {
   #portfolioContent .col-md-6 {
     max-width: 48%;
   }
+
+  /* Button Spacing and Sizing */
+  .btn {
+    padding: 12px 24px;
+    font-size: 1rem;
+  }
+
+  /* ...existing code... */
 }
 
+/* 25. Maintain Single-Column Layout for Mobile */
 @media (max-width: 991px) {
+  .container {
+    flex-direction: column;
+  }
+
+  .col-md-6 {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+
   #portfolioContent .row {
     flex-direction: column;
   }
@@ -894,7 +884,35 @@ body:not(.dark-mode) .table tbody td {
   #portfolioContent .col-md-6 {
     max-width: 100%;
   }
+
+  .btn {
+    padding: 10px 20px;
+    font-size: 0.9rem;
+  }
+
+  /* ...existing mobile styles... */
 }
+
+/* Additional form styling */
+#authContainer .form {
+  /* Ensure forms take full height within their columns if needed */
+  height: 100%;
+}
+
+#portfolioContent {
+  /* ...existing code... */
+  padding-left: 20px;
+  padding-right: 20px;
+  /* ...existing code... */
+}
+
+
+#authContainer .form {
+  /* Ensure forms take full height within their columns if needed */
+  height: 100%;
+}
+
+
 
 #portfolioContent {
   /* ...existing code... */
