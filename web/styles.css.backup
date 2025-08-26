@@ -662,12 +662,8 @@ body:not(.dark-mode) .table tbody td {
 @media (max-width: 480px) {
   /* Reset margins and padding for more space */
   .container {
-    margin-top: 15px;
+    margin-top: 0;
     padding: 10px;
-  }
-  
-  .navbar-brand {
-    font-size: 1rem;
   }
 
   /* Force single-column layout */
@@ -698,6 +694,17 @@ body:not(.dark-mode) .table tbody td {
   /* ...existing code... */
 }
 
+@media (max-width: 480px) {
+  .container {
+    margin-top: 15px;
+    padding: 10px;
+  }
+  .navbar-brand {
+    font-size: 1rem;
+  }
+  /* ...existing code... */
+}
+
 @media screen and (max-aspect-ratio: 9/16) {
   .container {
     margin-top: 0;
@@ -711,6 +718,24 @@ body:not(.dark-mode) .table tbody td {
     font-size: 1rem;
     padding: 12px 24px;
   }
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-size: 1.25rem;
+  }
+  /* ...existing code... */
+}
+
+@media screen and (max-aspect-ratio: 9/16) {
+  .container {
+    margin-top: 0;
+    padding: 10px;
+  }
+  .row {
+    flex-direction: column !important;
+  }
+  .btn,
   h1,
   h2,
   h3,
@@ -781,20 +806,6 @@ body:not(.dark-mode) .table tbody td {
   /* Optimize card decks */
   .card-deck {
     display: block;
-  }
-
-  /* Adjust navbar to stack items vertically and occupy full width */
-  .navbar-nav {
-    flex-direction: column !important;
-    width: 100%;
-  }
-
-  .navbar-nav .nav-link {
-    display: block;
-    width: 100%;
-    text-align: center;
-    font-size: 1rem; /* Maintain consistent font size */
-    padding: 10px 0; /* Adjust padding for better spacing */
   }
 
   /* ...existing code... */
@@ -942,4 +953,20 @@ body:not(.dark-mode) .table tbody td {
   }
 }
 
+@media (max-aspect-ratio: 9/16) {
+  /* Adjust navbar to stack items vertically and occupy full width */
+  .navbar-nav {
+    flex-direction: column !important;
+    width: 100%;
+  }
 
+  .navbar-nav .nav-link {
+    display: block;
+    width: 100%;
+    text-align: center;
+    font-size: 1rem; /* Maintain consistent font size */
+    padding: 10px 0; /* Adjust padding for better spacing */
+  }
+
+  /* ...existing mobile styles... */
+}

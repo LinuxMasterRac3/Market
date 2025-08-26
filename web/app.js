@@ -211,8 +211,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
       if (!response.ok) {
         if (response.status === 401) {
-          console.log("User not authenticated, showing login form");
-          showAuthForms(true);
+          console.log("User not authenticated, redirecting to login");
+          window.location.replace("/registration.html");
           return;
         }
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -508,10 +508,8 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function logoutUser() {
-    // Semplice logout lato client
-    showAuthForms(true);
-    document.getElementById("portfolioContent").style.display = "none";
-    document.getElementById("accountSection").style.display = "none";
+    // Redirect to login page on logout
+    window.location.replace("/registration.html");
     console.log("Logout effettuato");
   }
 
